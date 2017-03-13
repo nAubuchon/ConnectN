@@ -11,20 +11,21 @@ class Node {
 public:
     //Constructors
     Node();
-    Node(int**, int);
+    Node(u_int8_t**, u_int8_t, u_int8_t);
     //Destructor
     ~Node();
 
     //member functions
-    int** getData();
+    u_int8_t** getData();
     Node* getParent();
     void addChild(Node*);
     Node** getChildren();
 
 private:
     //data members
-    int width;
-    int** data;
+    u_int8_t width;
+    u_int8_t height;
+    u_int8_t** data;
     Node* parent;
     Node** children;
 };

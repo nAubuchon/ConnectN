@@ -4,35 +4,46 @@
 
 #include "Node.h"
 
+using namespace std;
+
 Node::Node() {
     width = 0;
+    height = 0;
     data = NULL;
     parent = NULL;
     children = NULL;
 }
 
-Node::Node(int **d, int c) {
-    width = c;
+Node::Node(u_int8_t **d, u_int8_t w, u_int8_t h) {
+    width = w;
+    height = h;
     data = d;
     parent = NULL;
-    children = new Node*[c];
-    for(int i=0; i<width; i++)
+    children = new Node*[width];
+    for(u_int8_t i=0; i<width; i++)
         children[i] = NULL;
 }
 
 Node::~Node() { // this may need some work
-    std::cout << std::endl << "NODE DESTRUCTOR STARTING" << std::endl; //testing
-    for(int i=0;i<width;i++) {
+    cout << "NODE DESTRUCTOR STARTING" << endl; //testing
+    for(u_int8_t i=0;i<width;++i) {
+        //delete the children if they exist
         if(children[i] != NULL) {
+            cout << "Deleting child[" << (int)i << "]..." << endl;
             delete children[i];
-            if(data[i] != NULL)
-                delete[] data[i];
         }
     }
-    std::cout << std::endl << "NODE DESTRUCTOR COMPLETE" << std::endl; //testing
+    //then delete the data
+    for(u_int8_t j=0; j<width; ++j) {
+        cout << "Deleting data[" << (int)j << "]..." << endl;
+        delete[] data[j];
+    }
+    delete[] data;
+    delete[] children;
+    cout << "NODE DESTRUCTOR COMPLETE" << endl; //testing
 }
 
-int** Node::getData() {
+u_int8_t** Node::getData() {
     return data;
 }
 
@@ -41,7 +52,7 @@ Node* Node::getParent() {
 }
 
 void Node::addChild(Node *c) {
-    int i = 0;
+    u_int8_t i = 0;
     while(i<width) {
         if(children[i]==NULL) {
             children[i] = c;
@@ -51,7 +62,7 @@ void Node::addChild(Node *c) {
         i++;
     }
 
-    std::cout << "No more room for children" << std::endl;
+    cout << "No more room for children" << endl;
 }
 
 Node** Node::getChildren() {
