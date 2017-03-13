@@ -3,3 +3,19 @@
 //
 
 #include "Tree.h"
+
+Tree::Tree() {
+
+}
+
+Tree::~Tree() {
+
+}
+
+void Tree::addLeft(Node*) {
+
+}
+
+void Tree::deleteBranch(Node*){
+
+}

@@ -9,12 +9,18 @@
 
 class Tree {
 public:
+    //Constructors
     Tree();
+
+    //Destructor
     ~Tree();
 
+    //member functions
     void addLeft(Node*);
     void deleteBranch(Node*);
+
 private:
+    //data members
     Node root;
 };
 

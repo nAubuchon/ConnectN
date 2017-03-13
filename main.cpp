@@ -12,11 +12,7 @@ int** createGrid(unsigned height, unsigned width, int num)
         array[i] = new int[width];
 
         for (int j = 0; j < width; j++)
-        {
-            // fill in some initial values
-            // (filling in zeros would be more logic, but this is just for the example)
             array[i][j] = num;
-        }
     }
 
     return array;
@@ -25,27 +21,20 @@ int** createGrid(unsigned height, unsigned width, int num)
 int main() {
     const int n = 4;
 
+    //**** TESTING ****//
     int **x = createGrid(n,n,0);
-    int size = sizeof(x);
 
     Node *parentNode = new Node(x, n);
 
-    int **y = createGrid(n,n,0);
-    memcpy(y,x,size);
-    y[3][2] = 1;
-    Node *child1 = new Node(y, n);
-
-    int **z = createGrid(n,n,0);;
-    memcpy(z,x,size);
-    z[3][0] = 2;
-    Node *child2 = new Node(z, n);
-
-    parentNode->addChild(child1);
-    parentNode->addChild(child2);
+    for(int i=0; i<n; i++) {
+        parentNode->addChild(new Node(createGrid(n, n, i+1), n));
+    }
 
     int **a = parentNode->getData();
     int **b = parentNode->getChildren()[0]->getData();
     int **c = parentNode->getChildren()[1]->getData();
+    int **d = parentNode->getChildren()[2]->getData();
+    int **e = parentNode->getChildren()[3]->getData();
 
     cout << "Parent:" << endl;
     for(int i=0; i<n; i++) {
@@ -68,7 +57,22 @@ int main() {
         cout << endl;
     }
 
+    cout << endl << "Child3: " << endl;
+    for(int i=0; i<n; i++) {
+        for (int j = 0; j < n; j++)
+            cout << d[i][j] << " ";
+        cout << endl;
+    }
+
+    cout << endl << "Child4: " << endl;
+    for(int i=0; i<n; i++) {
+        for (int j = 0; j < n; j++)
+            cout << e[i][j] << " ";
+        cout << endl;
+    }
+
     delete parentNode;
 
+    //**** END TESTING ****//
     return 0;
 }

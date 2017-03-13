@@ -20,11 +20,14 @@ Node::Node(int **d, int c) {
         children[i] = NULL;
 }
 
-Node::~Node() {
+Node::~Node() { // this may need some work
     std::cout << std::endl << "NODE DESTRUCTOR STARTING" << std::endl; //testing
     for(int i=0;i<width;i++) {
-        delete children[i];
-        delete[] data[i];
+        if(children[i] != NULL) {
+            delete children[i];
+            if(data[i] != NULL)
+                delete[] data[i];
+        }
     }
     std::cout << std::endl << "NODE DESTRUCTOR COMPLETE" << std::endl; //testing
 }
