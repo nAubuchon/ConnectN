@@ -21,12 +21,12 @@ Node::Node(int **d, int c) {
 }
 
 Node::~Node() {
-    std::cout << std::endl << "NODE DESTRUCTOR STARTING" << std::endl;
+    std::cout << std::endl << "NODE DESTRUCTOR STARTING" << std::endl; //testing
     for(int i=0;i<width;i++) {
         delete children[i];
         delete[] data[i];
     }
-    std::cout << std::endl << "NODE DESTRUCTOR COMPLETE" << std::endl;
+    std::cout << std::endl << "NODE DESTRUCTOR COMPLETE" << std::endl; //testing
 }
 
 int** Node::getData() {
