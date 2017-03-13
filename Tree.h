@@ -17,11 +17,26 @@ public:
 
     //member functions
     void addLeft(Node*);
-    void deleteBranch(Node*);
+    void deleteBranch();
+    void stepDown();
+    void stepRight();
+
+    Node* getRoot();
+    Node* getCurrNode();
+    Node* getCurrParent();
+    Node** getCurrChildren();
+
+    uint8_t** getCurrData();
+    uint8_t** getRootData();
 
 private:
     //data members
-    Node root;
+    int depth;
+    Node* root;
+    Node* currNode;
+    Node* currParent;
+    Node** currChildren;
+    uint8_t** currData;
 };
 
 

@@ -16,6 +16,38 @@ void Tree::addLeft(Node*) {
 
 }
 
-void Tree::deleteBranch(Node*){
+void Tree::deleteBranch(){
+
+}
+
+void Tree::stepDown() {
+
+}
+
+void Tree::stepRight(){
+
+}
+
+Node* Tree::getRoot() {
+
+}
+
+Node* Tree::getCurrNode(){
+
+}
+
+Node* Tree::getCurrParent() {
+
+}
+
+Node** Tree::getCurrChildren() {
+
+}
+
+uint8_t** Tree::getCurrData() {
+
+}
+
+uint8_t** Tree::getRootData() {
 
 }

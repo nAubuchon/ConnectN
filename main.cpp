@@ -4,8 +4,7 @@
 
 using namespace std;
 
-u_int8_t** createGrid(unsigned height, unsigned width)
-{
+u_int8_t** createGrid(unsigned height, unsigned width) {
     srand((unsigned int)time(NULL));    //seeding rand()
 
     u_int8_t** array = 0;
@@ -22,8 +21,7 @@ u_int8_t** createGrid(unsigned height, unsigned width)
     return array;
 }
 
-u_int8_t** copyGrid(unsigned height, unsigned width, u_int8_t **grid)
-{
+u_int8_t** copyGrid(unsigned height, unsigned width, u_int8_t **grid) {
     u_int8_t** array = 0;
     array = new u_int8_t*[height];
 
