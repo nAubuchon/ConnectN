@@ -11,21 +11,27 @@ class Node {
 public:
     //Constructors
     Node();
-    Node(u_int8_t**, u_int8_t, u_int8_t);
+    Node(uint8_t**, uint8_t, uint8_t);
     //Destructor
     ~Node();
 
     //member functions
-    u_int8_t** getData();
+    uint8_t** getData();
     Node* getParent();
-    void addChild(Node*);
+    bool addChild(Node*);
     Node** getChildren();
+    uint8_t getWidth();
+    uint8_t getHeight();    // remove?
+    int8_t get_cIndex();
+    void set_cIndex(int8_t);
+    void shiftChildren(int8_t);
 
 private:
     //data members
-    u_int8_t width;
-    u_int8_t height;
-    u_int8_t** data;
+    uint8_t width;
+    uint8_t height;     // remove?
+    int8_t c_index;
+    uint8_t** data;
     Node* parent;
     Node** children;
 };

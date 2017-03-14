@@ -11,7 +11,7 @@ class Tree {
 public:
     //Constructors
     Tree();
-
+    Tree(Node*);
     //Destructor
     ~Tree();
 
@@ -26,15 +26,20 @@ public:
     Node* getCurrParent();
     Node** getCurrChildren();
 
+    bool isEmpty();
+
     uint8_t** getCurrData();
     uint8_t** getRootData();
 
 private:
     //data members
     int depth;
+    int breadth;
+    int currDepth;
+    int currBreadth;
     Node* root;
-    Node* currNode;
     Node* currParent;
+    Node* currNode;
     Node** currChildren;
     uint8_t** currData;
 };
