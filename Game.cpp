@@ -319,7 +319,7 @@ bool Game::checkWin(char color, int x, int y) {
     }
 
     //if all the above failed, there was no win
-    //returns false
+    //so return false
     return false;
 }
 

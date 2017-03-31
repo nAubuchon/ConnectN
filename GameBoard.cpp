@@ -66,37 +66,6 @@ GameBoard::~GameBoard() { // this may need some work
 
 
 //---------------------------------------------------
-//  getGrid()
-//
-//  Purpose: Accessor, returns pointer to the grid
-//  2D array
-//
-//  Parameters: (none)
-//
-//  Returns: char**
-//---------------------------------------------------
-char** GameBoard::getGrid() {
-    return mGrid;
-}
-
-
-//---------------------------------------------------
-//  getRow(int col)
-//
-//  Purpose: Accessor, returns the highest open slot
-//  in the specified column
-//
-//  Parameters:
-//      int col -- the column to look at
-//
-//  Returns: int
-//---------------------------------------------------
-int GameBoard::getRow(int col) {
-    return mRows[col];
-}
-
-
-//---------------------------------------------------
 //  printGrid()
 //
 //  Purpose: Prints out the current state of the
@@ -131,7 +100,7 @@ void GameBoard::printGrid() {
 //  Returns: (none)
 //---------------------------------------------------
 bool GameBoard::placePiece(char c, int col) {
-    if((col <= mWidth - 1) && (mRows[col] < mHeight) ) {
+    if((col < mWidth) && (mRows[col] < mHeight) ) {
         mGrid[col][mRows[col]] = c;
         mRows[col]++;
 
@@ -142,9 +111,61 @@ bool GameBoard::placePiece(char c, int col) {
 }
 
 
+//---------------------------------------------------
+//  getGrid()
+//
+//  Purpose: Accessor, returns pointer to the mGrid
+//  2D array
+//
+//  Parameters: (none)
+//
+//  Returns: char**
+//---------------------------------------------------
+char** GameBoard::getGrid() {
+    return mGrid;
+}
+
+
+//---------------------------------------------------
+//  getRow(int col)
+//
+//  Purpose: Accessor, returns the highest open slot
+//  in the specified column
+//
+//  Parameters:
+//      int col -- the column to look at
+//
+//  Returns: int
+//---------------------------------------------------
+int GameBoard::getRow(int col) {
+    return mRows[col];
+}
+
+//---------------------------------------------------
+//  getHeight()
+//
+//  Purpose: Accessor, returns the height of the 2D
+//  array
+//
+//  Parameters: (none)
+//
+//  Returns: int
+//---------------------------------------------------
 int GameBoard::getHeight(){
     return mHeight;
 }
+
+
+//---------------------------------------------------
+//  getWidth()
+//
+//  Purpose: Accessor, returns the width of the 2D
+//  array
+//
+//  Parameters: (none)
+//
+//  Returns: int
+//---------------------------------------------------
 int GameBoard::getWidth(){
     return mWidth;
 }

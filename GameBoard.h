@@ -20,11 +20,13 @@ public:
     ~GameBoard();
 
     ///member functions
-    char** getGrid();
-    int getRow(int);
+    //general usage
     void printGrid();
     bool placePiece(char, int);
 
+    //accessors
+    char** getGrid();
+    int getRow(int);
     int getHeight();
     int getWidth();
 
