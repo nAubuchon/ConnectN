@@ -28,8 +28,8 @@ public:
 
 private:
     ///data members
-    string name;
-    char color;
+    string mName;
+    char mColor;
 };
 
 #endif //CONNECTN_PLAYERHUMAN_H

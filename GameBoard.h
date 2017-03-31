@@ -30,10 +30,10 @@ public:
 
 private:
     ///data members
-    int width;  //board width
-    int height; //board height
-    char** grid;    //2D array
-    vector<int> rows;   //keeping track of highest slot
+    int mWidth;  //board width
+    int mHeight; //board height
+    char** mGrid;    //2D array
+    vector<int> mRows;   //keeping track of highest slot
 };
 
 #endif //CONNECTN_GAMEBOARD_H

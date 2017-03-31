@@ -16,31 +16,31 @@ using namespace std;
 //  Returns: GameBoard object
 //---------------------------------------------------
 GameBoard::GameBoard() {
-    width = 0;
-    height = 0;
-    grid = NULL;
+    mWidth = 0;
+    mHeight = 0;
+    mGrid = NULL;
 }
 
 
 //---------------------------------------------------
 //  GameBoard(char **g, int w, int h)
 //
-//  Purpose: Initializing constructor, sets width,
-//  height, grid (2D char array) and rows vector
+//  Purpose: Initializing constructor, sets mWidth,
+//  mHeight, mGrid (2D char array) and mRows vector
 //
 //  Parameters: (none)
 //
 //  Returns: GameBoard object
 //---------------------------------------------------
 GameBoard::GameBoard(char **g, int w, int h) {
-    width = w;
-    height = h;
-    grid = g;
+    mWidth = w;
+    mHeight = h;
+    mGrid = g;
 
-    rows.reserve((unsigned)width);
+    mRows.reserve((unsigned)mWidth);
 
-    for(int i=0; i<width; ++i)
-        rows.push_back(0);
+    for(int i=0; i<mWidth; ++i)
+        mRows.push_back(0);
 }
 
 
@@ -57,9 +57,9 @@ GameBoard::~GameBoard() { // this may need some work
     cout << "GameBoard DESTRUCTOR STARTING" << endl; ///testing
 
     //delete the grid
-    for(int j=0; j<width; ++j)
-        delete[] grid[j];
-    delete[] grid;
+    for(int j=0; j<mWidth; ++j)
+        delete[] mGrid[j];
+    delete[] mGrid;
 
     cout << "GameBoard DESTRUCTOR COMPLETE" << endl; ///testing
 }
@@ -76,7 +76,7 @@ GameBoard::~GameBoard() { // this may need some work
 //  Returns: char**
 //---------------------------------------------------
 char** GameBoard::getGrid() {
-    return grid;
+    return mGrid;
 }
 
 
@@ -92,7 +92,7 @@ char** GameBoard::getGrid() {
 //  Returns: int
 //---------------------------------------------------
 int GameBoard::getRow(int col) {
-    return rows[col];
+    return mRows[col];
 }
 
 
@@ -107,9 +107,9 @@ int GameBoard::getRow(int col) {
 //  Returns: void
 //---------------------------------------------------
 void GameBoard::printGrid() {
-    for (int j=(height-1); j>=0; --j) {
-        for(int i=0; i<width; ++i)
-            cout << grid[i][j] << " ";
+    for (int j=(mHeight-1); j>=0; --j) {
+        for(int i=0; i<mWidth; ++i)
+            cout << mGrid[i][j] << " ";
         cout << endl;
     }
     cout << endl;
@@ -131,9 +131,9 @@ void GameBoard::printGrid() {
 //  Returns: (none)
 //---------------------------------------------------
 bool GameBoard::placePiece(char c, int col) {
-    if( (rows[col] < height) && (col <= width-1) ) {
-        grid[col][rows[col]] = c;
-        rows[col]++;
+    if( (mRows[col] < mHeight) && (col <= mWidth-1) ) {
+        mGrid[col][mRows[col]] = c;
+        mRows[col]++;
 
         return true;
     }
@@ -143,8 +143,8 @@ bool GameBoard::placePiece(char c, int col) {
 
 
 int GameBoard::getHeight(){
-    return height;
+    return mHeight;
 }
 int GameBoard::getWidth(){
-    return width;
+    return mWidth;
 }

@@ -15,8 +15,8 @@
 //  Returns: PlayerAI object
 //---------------------------------------------------
 PlayerAI::PlayerAI() {
-    color = ' ';
-    boardCopy = NULL;
+    mColor = ' ';
+    mBoardCopy = NULL;
 }
 
 
@@ -41,11 +41,11 @@ PlayerAI::PlayerAI() {
 //---------------------------------------------------
 PlayerAI::PlayerAI(bool first, char** b, int w, int h) {
     if(first)
-        color = 'B';
+        mColor = 'B';
     else
-        color = 'R';
+        mColor = 'R';
 
-    boardCopy = new GameBoard(copyGrid(w, h, b), w, h);
+    mBoardCopy = new GameBoard(copyGrid(w, h, b), w, h);
 }
 
 
@@ -88,7 +88,7 @@ int PlayerAI::takeTurn(GameBoard* board) {
             cin.clear();
             cin.ignore(100, '\n'); //skip bad input
         }
-        else if( board->placePiece(color, choice) )
+        else if( board->placePiece(mColor, choice) )
             break;
         else    //user selected a full or non-existent column
             cout << "Invalid Selection..." << endl << endl;
@@ -124,7 +124,7 @@ int PlayerAI::takeTurn(GameBoard* board) {
 //  Returns: char
 //---------------------------------------------------
 char PlayerAI::getColor() {
-    return color;
+    return mColor;
 }
 
 

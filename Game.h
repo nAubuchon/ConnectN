@@ -31,15 +31,15 @@ private:
     ///data members
 
     //board data
-    int N;          //winning number of lined up pieces
-    GameBoard* connectN; //the GameBoard object
+    int mN;          //winning number of lined up pieces
+    GameBoard* mGameBoard; //the GameBoard object
 
     //players
-    PlayerAI* aemula;
-    PlayerHuman* vos;
+    PlayerAI* mAI;
+    PlayerHuman* mHuman;
 
     //other
-    bool gameOver;
+    bool mGameOver;
 };
 
 #endif //CONNECTN_GAME_H

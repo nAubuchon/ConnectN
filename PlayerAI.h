@@ -28,8 +28,8 @@ public:
 
 private:
     ///data members
-    char color;
-    GameBoard* boardCopy;
+    char mColor;
+    GameBoard* mBoardCopy;
 };
 
 #endif //CONNECTN_PLAYERAI_H

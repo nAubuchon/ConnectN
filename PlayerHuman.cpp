@@ -15,7 +15,7 @@
 //  Returns: PlayerHuman object
 //---------------------------------------------------
 PlayerHuman::PlayerHuman() {
-    name = "Human Player";
+    mName = "Human Player";
 }
 
 
@@ -35,12 +35,12 @@ PlayerHuman::PlayerHuman() {
 //---------------------------------------------------
 PlayerHuman::PlayerHuman(string n, bool first) {
     srand((unsigned)time(NULL));
-    name = n;
+    mName = n;
 
     if(first)
-        color = 'B';
+        mColor = 'B';
     else
-        color = 'R';
+        mColor = 'R';
 }
 
 
@@ -80,7 +80,7 @@ int PlayerHuman::takeTurn(GameBoard* grid) {
             cin.clear();
             cin.ignore(100, '\n'); //skip bad input
         }
-        else if( grid->placePiece(color, choice) )
+        else if( grid->placePiece(mColor, choice) )
             break;
         else    //user selected a full or non-existent column
             cout << "Invalid Selection..." << endl << endl;
@@ -116,7 +116,7 @@ int PlayerHuman::takeTurn(GameBoard* grid) {
 //  Returns: char
 //---------------------------------------------------
 char PlayerHuman::getColor() {
-    return color;
+    return mColor;
 }
 
 
@@ -131,5 +131,5 @@ char PlayerHuman::getColor() {
 //  Returns: string
 //---------------------------------------------------
 string PlayerHuman::getName() {
-    return name;
+    return mName;
 }
