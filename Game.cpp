@@ -14,8 +14,6 @@
 //  Returns: Game object
 //---------------------------------------------------
 Game::Game() {
-    bWidth = -1;
-    bHeight = -1;
     N = 0;
     connectN = NULL;
     aemula = NULL;
@@ -40,11 +38,11 @@ Game::Game() {
 //  Returns: Game object
 //---------------------------------------------------
 Game::Game(int n, bool playerFirst) {
-    bWidth = (2*n) - 1;
-    bHeight = (2*n) - 2;
+    int width = (2*n) - 1;
+    int height = (2*n) - 2;
     N = n;
-    connectN = new GameBoard(createGrid(bWidth, bHeight), bWidth, bHeight);
-    aemula = new PlayerAI(!playerFirst, connectN->getGrid(), bWidth, bHeight);
+    connectN = new GameBoard(createGrid(width, height), width, height);
+    aemula = new PlayerAI(!playerFirst, connectN->getGrid(), width, height);
     vos = new PlayerHuman("Nick", playerFirst);
     gameOver = false;
 }
@@ -201,6 +199,9 @@ char** Game::createGrid(int width, int height) {
 bool Game::checkWin(char color, int x, int y) {
     // temporary local variables
     char **grid = connectN->getGrid();
+    int width = connectN->getWidth();
+    int height = connectN->getHeight();
+
     int count = 0;
     int i = 0;
 
@@ -244,10 +245,10 @@ bool Game::checkWin(char color, int x, int y) {
             return true;
     }
     //check horizontal right, keeping value of count so far
-    if(x < bWidth-1) {
+    if(x < connectN->getWidth() -1) {
         //begin moving right (+1,0)
         for (i=1; i<N; ++i) {
-            if (x+i > bWidth-1)
+            if (x+i > width-1)
                 break;
             if (grid[x+i][y] != color)
                 break;
@@ -261,10 +262,10 @@ bool Game::checkWin(char color, int x, int y) {
     count = 0;
 
     //check diagonal low left to high right
-    if(y < bHeight-1 && x < bWidth-1) {
+    if(y < height-1 && x < width-1) {
         //begin moving right and up (+1,+1)
         for (i=1; i<N; ++i) {
-            if (x+i>bWidth-1 || y+i>bHeight-1)
+            if (x+i>width-1 || y+i>height-1)
                 break;
             if (grid[x+i][y+i] != color)
                 break;
@@ -291,10 +292,10 @@ bool Game::checkWin(char color, int x, int y) {
     count = 0;
 
     //check diagonal high left to low right
-    if( y>0 && x<(bWidth-1) ) {
+    if( y>0 && x<(width-1) ) {
         //begin moving right and down (+1,-1)
         for (i=1; i<N; ++i) {
-            if( (x+i)>bWidth-1 || (y-i)<0 )
+            if( (x+i)>width-1 || (y-i)<0 )
                 break;
             if (grid[x+i][y-i] != color)
                 break;
@@ -304,10 +305,10 @@ bool Game::checkWin(char color, int x, int y) {
             return true;
     }
     //check diagonal low right to high left
-    if( y<(bHeight-1) && x>0 ) {
+    if( y<(height-1) && x>0 ) {
         //begin moving left and up (-1,+1)
         for (i=1; i<N; ++i) {
-            if(x-i<0 || y+i>bHeight-1)
+            if(x-i<0 || y+i>height-1)
                 break;
             if (grid[x-i][y+i] != color)
                 break;
@@ -351,9 +352,11 @@ bool Game::isGameOver() {
 //  Returns: void
 //---------------------------------------------------
 void Game::clearBoard() {
+    int height = connectN->getHeight();
+    int width = connectN->getWidth();
     connectN->~GameBoard();
 
-    connectN = new GameBoard(createGrid(bWidth, bHeight), bWidth, bHeight);
+    connectN = new GameBoard(createGrid(width, height), width, height);
     gameOver = false;
 }
 

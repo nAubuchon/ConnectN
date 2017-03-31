@@ -31,8 +31,6 @@ private:
     ///data members
 
     //board data
-    int bWidth;  //number of columns
-    int bHeight; //number of rows
     int N;          //winning number of lined up pieces
     GameBoard* connectN; //the GameBoard object
 

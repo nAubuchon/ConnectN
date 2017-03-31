@@ -25,6 +25,9 @@ public:
     void printGrid();
     bool placePiece(char, int);
 
+    int getHeight();
+    int getWidth();
+
 private:
     ///data members
     int width;  //board width

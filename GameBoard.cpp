@@ -140,3 +140,11 @@ bool GameBoard::placePiece(char c, int col) {
     else
         return false;
 }
+
+
+int GameBoard::getHeight(){
+    return height;
+}
+int GameBoard::getWidth(){
+    return width;
+}
