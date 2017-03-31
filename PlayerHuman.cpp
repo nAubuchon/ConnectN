@@ -86,8 +86,6 @@ int PlayerHuman::takeTurn(GameBoard* grid) {
             cout << "Invalid Selection..." << endl << endl;
     }
 
-    grid->printBoard();
-
     return choice;
 }
 
@@ -101,8 +99,6 @@ int PlayerHuman::takeTurn(GameBoard* grid) {
 //        if (grid->placePiece(color, x))
 //            break;
 //    }
-//
-//    grid->printBoard();
 //
 //    return x;
 //}

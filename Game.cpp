@@ -14,8 +14,8 @@
 //  Returns: Game object
 //---------------------------------------------------
 Game::Game() {
-    gridWidth = -1;
-    gridHeight = -1;
+    bWidth = -1;
+    bHeight = -1;
     N = 0;
     connectN = NULL;
     aemula = NULL;
@@ -40,11 +40,11 @@ Game::Game() {
 //  Returns: Game object
 //---------------------------------------------------
 Game::Game(int n, bool playerFirst) {
-    gridWidth = (2*n) - 1;
-    gridHeight = (2*n) - 2;
+    bWidth = (2*n) - 1;
+    bHeight = (2*n) - 2;
     N = n;
-    connectN = new GameBoard(createGrid(gridWidth, gridHeight), gridWidth, gridHeight);
-    aemula = new PlayerAI(!playerFirst, connectN->getBoard(), gridWidth, gridHeight);
+    connectN = new GameBoard(createGrid(bWidth, bHeight), bWidth, bHeight);
+    aemula = new PlayerAI(!playerFirst, connectN->getGrid(), bWidth, bHeight);
     vos = new PlayerHuman("Nick", playerFirst);
     gameOver = false;
 }
@@ -70,7 +70,7 @@ Game::~Game() {
 //  Purpose: Does a single turn for each player in
 //  the order of "Black" first and "Red" second.
 //  Receives the selected column number and after
-//  each players' turn, checks if the piece resulted
+//  each player's turn, checks if the piece resulted
 //  in a winning condition for that player
 //
 //  Parameters: (none)
@@ -86,6 +86,9 @@ void Game::playGame() {
         //initiate Human's turn
         col = vos->takeTurn(connectN);
 
+        //displayColumn
+        displayBoard();
+
         //get the row where the piece "fell"
         row = connectN->getRow(col) - 1;
 
@@ -98,6 +101,9 @@ void Game::playGame() {
 
         //initiate AI's turn
         col = aemula->takeTurn(connectN);
+
+        //displayColumn
+        displayBoard();
 
         //get the row where the piece "fell"
         row = connectN->getRow(col) - 1;
@@ -112,7 +118,8 @@ void Game::playGame() {
     // Same process, but with AI First
     else {
         col = aemula->takeTurn(connectN);
-        row = connectN->getRow(col) + 1;
+        displayBoard();
+        row = connectN->getRow(col) - 1;
 
         if( checkWin('B', col, row)) {
             cout << "Black Wins!";
@@ -121,7 +128,8 @@ void Game::playGame() {
         }
 
         col = vos->takeTurn(connectN);
-        row = connectN->getRow(col) + 1;
+        displayBoard();
+        row = connectN->getRow(col) - 1;
 
         if( checkWin('R', col, row)) {
             cout << "Red Wins!";
@@ -136,7 +144,8 @@ void Game::playGame() {
 //  createGrid(int width, int height)
 //
 //  Purpose: Allocates and returns a pointer to new
-//  memory for a 2D array of chars for the game grid
+//  memory for a 2D array of chars for the gameBoard
+//  grid
 //
 //  Parameters:
 //      int width -- the width of the grid
@@ -191,7 +200,7 @@ char** Game::createGrid(int width, int height) {
 //---------------------------------------------------
 bool Game::checkWin(char color, int x, int y) {
     // temporary local variables
-    char **grid = connectN->getBoard();
+    char **grid = connectN->getGrid();
     int count = 0;
     int i = 0;
 
@@ -235,10 +244,10 @@ bool Game::checkWin(char color, int x, int y) {
             return true;
     }
     //check horizontal right, keeping value of count so far
-    if(x < gridWidth-1) {
+    if(x < bWidth-1) {
         //begin moving right (+1,0)
         for (i=1; i<N; ++i) {
-            if (x+i > gridWidth-1)
+            if (x+i > bWidth-1)
                 break;
             if (grid[x+i][y] != color)
                 break;
@@ -252,10 +261,10 @@ bool Game::checkWin(char color, int x, int y) {
     count = 0;
 
     //check diagonal low left to high right
-    if(y < gridHeight-1 && x < gridWidth-1) {
+    if(y < bHeight-1 && x < bWidth-1) {
         //begin moving right and up (+1,+1)
         for (i=1; i<N; ++i) {
-            if (x+i>gridWidth-1 || y+i>gridHeight-1)
+            if (x+i>bWidth-1 || y+i>bHeight-1)
                 break;
             if (grid[x+i][y+i] != color)
                 break;
@@ -282,10 +291,10 @@ bool Game::checkWin(char color, int x, int y) {
     count = 0;
 
     //check diagonal high left to low right
-    if( y>0 && x<(gridWidth-1) ) {
+    if( y>0 && x<(bWidth-1) ) {
         //begin moving right and down (+1,-1)
         for (i=1; i<N; ++i) {
-            if( (x+i)>gridWidth-1 || (y-i)<0 )
+            if( (x+i)>bWidth-1 || (y-i)<0 )
                 break;
             if (grid[x+i][y-i] != color)
                 break;
@@ -295,10 +304,10 @@ bool Game::checkWin(char color, int x, int y) {
             return true;
     }
     //check diagonal low right to high left
-    if( y<(gridHeight-1) && x>0 ) {
+    if( y<(bHeight-1) && x>0 ) {
         //begin moving left and up (-1,+1)
         for (i=1; i<N; ++i) {
-            if(x-i<0 || y+i>gridHeight-1)
+            if(x-i<0 || y+i>bHeight-1)
                 break;
             if (grid[x-i][y+i] != color)
                 break;
@@ -344,6 +353,21 @@ bool Game::isGameOver() {
 void Game::clearBoard() {
     connectN->~GameBoard();
 
-    connectN = new GameBoard(createGrid(gridWidth, gridHeight), gridWidth, gridHeight);
+    connectN = new GameBoard(createGrid(bWidth, bHeight), bWidth, bHeight);
     gameOver = false;
+}
+
+
+//---------------------------------------------------
+//  displayBoard()
+//
+//  Purpose: Prints out the current state of the
+//  board row by row from the top
+//
+//  Parameters: (none)
+//
+//  Returns: void
+//---------------------------------------------------
+void Game::displayBoard() {
+    connectN->printGrid();
 }

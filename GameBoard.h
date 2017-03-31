@@ -20,16 +20,16 @@ public:
     ~GameBoard();
 
     ///member functions
-    char** getBoard();
+    char** getGrid();
     int getRow(int);
-    void printBoard();
+    void printGrid();
     bool placePiece(char, int);
 
 private:
     ///data members
     int width;  //board width
     int height; //board height
-    char** board;    //2D array
+    char** grid;    //2D array
     vector<int> rows;   //keeping track of highest slot
 };
 

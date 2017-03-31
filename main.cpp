@@ -9,6 +9,8 @@ int main() {
     Game myGame(4, true);
     char garbage;
 
+    myGame.displayBoard();
+
     //game loop
     while(true) {
         myGame.playGame();

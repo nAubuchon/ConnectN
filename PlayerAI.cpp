@@ -94,8 +94,6 @@ int PlayerAI::takeTurn(GameBoard* board) {
             cout << "Invalid Selection..." << endl << endl;
     }///*****************FOR TESTING******************
 
-    board->printBoard();
-
     return choice;
 }
 
@@ -109,8 +107,6 @@ int PlayerAI::takeTurn(GameBoard* board) {
 //        if (board->placePiece(color, x))
 //            break;
 //    }
-//
-//    board->printBoard();
 //
 //    return x;
 //}

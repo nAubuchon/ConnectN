@@ -25,13 +25,14 @@ public:
     bool checkWin(char,int,int);
     bool isGameOver();
     void clearBoard();
+    void displayBoard();
 
 private:
     ///data members
 
-    //grid
-    int gridWidth;  //number of columns
-    int gridHeight; //number of rows
+    //board data
+    int bWidth;  //number of columns
+    int bHeight; //number of rows
     int N;          //winning number of lined up pieces
     GameBoard* connectN; //the GameBoard object
 

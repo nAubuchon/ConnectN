@@ -18,24 +18,24 @@ using namespace std;
 GameBoard::GameBoard() {
     width = 0;
     height = 0;
-    board = NULL;
+    grid = NULL;
 }
 
 
 //---------------------------------------------------
-//  GameBoard(char **d, int w, int h)
+//  GameBoard(char **g, int w, int h)
 //
 //  Purpose: Initializing constructor, sets width,
-//  height, board (2D char array) and rows vector
+//  height, grid (2D char array) and rows vector
 //
 //  Parameters: (none)
 //
 //  Returns: GameBoard object
 //---------------------------------------------------
-GameBoard::GameBoard(char **b, int w, int h) {
+GameBoard::GameBoard(char **g, int w, int h) {
     width = w;
     height = h;
-    board = b;
+    grid = g;
 
     rows.reserve((unsigned)width);
 
@@ -56,27 +56,27 @@ GameBoard::GameBoard(char **b, int w, int h) {
 GameBoard::~GameBoard() { // this may need some work
     cout << "GameBoard DESTRUCTOR STARTING" << endl; ///testing
 
-    //then delete the board
+    //delete the grid
     for(int j=0; j<width; ++j)
-        delete[] board[j];
-    delete[] board;
+        delete[] grid[j];
+    delete[] grid;
 
     cout << "GameBoard DESTRUCTOR COMPLETE" << endl; ///testing
 }
 
 
 //---------------------------------------------------
-//  getBoard()
+//  getGrid()
 //
-//  Purpose: Accessor, returns pointer to te
-//  board 2D array
+//  Purpose: Accessor, returns pointer to the grid
+//  2D array
 //
 //  Parameters: (none)
 //
 //  Returns: char**
 //---------------------------------------------------
-char** GameBoard::getBoard() {
-    return board;
+char** GameBoard::getGrid() {
+    return grid;
 }
 
 
@@ -97,19 +97,19 @@ int GameBoard::getRow(int col) {
 
 
 //---------------------------------------------------
-//  printBoard()
+//  printGrid()
 //
 //  Purpose: Prints out the current state of the
-//  board row by row from the top
+//  grid row by row from the top
 //
 //  Parameters: (none)
 //
 //  Returns: void
 //---------------------------------------------------
-void GameBoard::printBoard() {
+void GameBoard::printGrid() {
     for (int j=(height-1); j>=0; --j) {
         for(int i=0; i<width; ++i)
-            cout << board[i][j] << " ";
+            cout << grid[i][j] << " ";
         cout << endl;
     }
     cout << endl;
@@ -132,7 +132,7 @@ void GameBoard::printBoard() {
 //---------------------------------------------------
 bool GameBoard::placePiece(char c, int col) {
     if( (rows[col] < height) && (col <= width-1) ) {
-        board[col][rows[col]] = c;
+        grid[col][rows[col]] = c;
         rows[col]++;
 
         return true;
