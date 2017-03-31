@@ -131,7 +131,7 @@ void GameBoard::printGrid() {
 //  Returns: (none)
 //---------------------------------------------------
 bool GameBoard::placePiece(char c, int col) {
-    if( (mRows[col] < mHeight) && (col <= mWidth-1) ) {
+    if((col <= mWidth - 1) && (mRows[col] < mHeight) ) {
         mGrid[col][mRows[col]] = c;
         mRows[col]++;
 
