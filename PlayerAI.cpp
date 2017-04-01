@@ -124,3 +124,48 @@ char PlayerAI::getColor() {
     return mColor;
 }
 
+//---------------------------------------------------
+//  copyGrid(int width, int height, char** grid)
+//
+//  Purpose: Allocates and returns a pointer to new
+//  memory for a copy of the 2D array of chars for
+//  the game grid
+//
+//  Parameters:
+//      int width -- the width of the grid
+//
+//      int height -- the height of the grid
+//
+//      char** grid -- the 2D array to be copied
+//
+//  Returns: char**
+//---------------------------------------------------
+char** PlayerAI::copyGrid(int width, int height, char** grid) {
+    char** array = 0;
+
+    array = new char*[height];
+
+    for (int i=0; i<height; ++i) {
+        array[i] = new char[width];
+
+        for (int j=0; j<width; ++j)
+            array[i][j] = grid[i][j];
+    }
+
+    return array;
+}
+
+int PlayerAI::minimax(GameBoard board, int col, int currentDepth, bool isMax) {
+	
+	if (isMax && board.placePiece('B', col)) {
+		return board.getScore('B');
+	}
+	else if (board.placePiece('W', col)) {
+		return board.getScore('W');
+	}
+
+	currentDepth++;
+	for (int col = 0; col < board.getWidth; col++) {
+		return minimax(board, col, currentDepth, !isMax);
+	}
+}

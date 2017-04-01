@@ -265,3 +265,7 @@ int GameBoard::getHeight() {
 int GameBoard::getWidth() {
     return mWidth;
 }
+
+int GameBoard::getScore(char color) {
+	return 0;
+}

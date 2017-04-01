@@ -32,6 +32,7 @@ public:
     int getRow(int column);
     int getHeight();
     int getWidth();
+	int getScore(char);
 
 private:
     ///data members
