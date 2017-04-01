@@ -16,15 +16,14 @@ class PlayerAI {
 public:
     ///constructors
     PlayerAI();
-    PlayerAI(bool,char**,int,int);
+    PlayerAI(bool isFirst, GameBoard* board);
 
     ///destructor
     ~PlayerAI();
 
     ///member functions
-    int takeTurn(GameBoard*);
+    int takeTurn(GameBoard* board);
     char getColor();
-    char** copyGrid(int,int,char**);
 
 private:
     ///data members

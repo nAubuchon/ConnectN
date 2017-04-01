@@ -20,24 +20,24 @@ PlayerHuman::PlayerHuman() {
 
 
 //---------------------------------------------------
-//  PlayerAI(bool first, char ** b, int w, int h)
+//  PlayerHuman(bool isFirst, string name)
 //
 //  Purpose: Initializing constructor, sets player
 //  name and color
 //
 //  Parameters:
-//      string n -- the name of the player
+//      bool isFirst -- Determines the piece color
+//      the Human player will use (Black goes first)
 //
-//      bool first -- Determines the piece color the
-//      Human player will use (Black goes first)
+//      string name -- the name of the player
 //
 //  Returns: PlayerHuman object
 //---------------------------------------------------
-PlayerHuman::PlayerHuman(string n, bool first) {
+PlayerHuman::PlayerHuman(bool isFirst, string name) {
     srand((unsigned)time(NULL));
-    mName = n;
+    mName = name;
 
-    if(first)
+    if(isFirst)
         mColor = 'B';
     else
         mColor = 'R';
@@ -45,7 +45,7 @@ PlayerHuman::PlayerHuman(string n, bool first) {
 
 
 //---------------------------------------------------
-//  ~PlayerAI()
+//  ~PlayerHuman()
 //
 //  Purpose: Destructor
 //
@@ -65,43 +65,43 @@ PlayerHuman::~PlayerHuman() {
 //  to place a piece into.  Returns the chosen column
 //
 //  Parameters:
-//      GameBoard* board -- the actual board to place
+//      GameBoard* board -- GameBoard object to place
 //      the piece into
 //
 //  Returns: int
 //---------------------------------------------------
-int PlayerHuman::takeTurn(GameBoard* grid) {
-    int choice = 0;
-    while(true) {
-        cout << "(Human) Please Choose a Column: ";
-        cin >> choice;
-        if( !cin ) {  //user didn't input a number
-            cout << "Invalid Input..." << endl << endl;
-            cin.clear();
-            cin.ignore(100, '\n'); //skip bad input
-        }
-        else if( grid->placePiece(mColor, choice) )
-            break;
-        else    //user selected a full or non-existent column
-            cout << "Invalid Selection..." << endl << endl;
-    }
-
-    return choice;
-}
-
-/// For Testing Purposes***
-//int PlayerHuman::takeTurn(GameBoard* grid) {
-//    int x = 0;
-//
+//int PlayerHuman::takeTurn(GameBoard* board) {
+//    int choice = 0;
 //    while(true) {
-//        x = (rand()%7);
-//
-//        if (grid->placePiece(color, x))
+//        cout << "(Human) Please Choose a Column: ";
+//        cin >> choice;
+//        if( !cin ) {  //user didn't input a number
+//            cout << "Invalid Input..." << endl << endl;
+//            cin.clear();
+//            cin.ignore(100, '\n'); //skip bad input
+//        }
+//        else if( board->placePiece(mColor, choice) )
 //            break;
+//        else    //user selected a full or non-existent column
+//            cout << "Invalid Selection..." << endl << endl;
 //    }
 //
-//    return x;
+//    return choice;
 //}
+
+/// For Testing Purposes***
+int PlayerHuman::takeTurn(GameBoard* board) {
+    int x = 0;
+
+    while(true) {
+        x = (rand()%7);
+
+        if (board->placePiece(mColor, x))
+            break;
+    }
+
+    return x;
+}
 /// ***********************
 
 

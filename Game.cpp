@@ -23,13 +23,13 @@ Game::Game() {
 
 
 //---------------------------------------------------
-//  Game(int n, bool playerFirst)
+//  Game(int N, bool playerFirst)
 //
 //  Purpose: Initializing constructor, sets GameBoard
 //  and Player objects
 //
 //  Parameters:
-//      int n -- to specify the number of in-line
+//      int N -- to specify the number of in-line
 //      pieces achieves a win
 //
 //      bool playerFirst -- to specify whether the
@@ -37,15 +37,16 @@ Game::Game() {
 //
 //  Returns: Game object
 //---------------------------------------------------
-Game::Game(int n, bool playerFirst) {
-    int width = (2*n) - 1;
-    int height = (2*n) - 2;
-    mN = n;
-    mGameBoard = new GameBoard(createGrid(width, height), width, height);
-    mAI = new PlayerAI(!playerFirst, mGameBoard->getGrid(), width, height);
-    mHuman = new PlayerHuman("Nick", playerFirst);
+Game::Game(int N, bool playerFirst) {
+    int width = (2*N) - 1;
+    int height = (2*N) - 2;
+    mN = N;
+    mGameBoard = new GameBoard(width, height);
+    mAI = new PlayerAI(!playerFirst, mGameBoard);
+    mHuman = new PlayerHuman(playerFirst, "Nick");
     mGameOver = false;
 }
+
 
 //---------------------------------------------------
 //  ~Game()
@@ -139,45 +140,6 @@ void Game::playGame() {
 
 
 //---------------------------------------------------
-//  createGrid(int width, int height)
-//
-//  Purpose: Allocates and returns a pointer to new
-//  memory for a 2D array of chars for the gameBoard
-//  grid
-//
-//  Parameters:
-//      int width -- the width of the grid
-//
-//      int height -- the height of the grid
-//
-//  Returns: char**
-//---------------------------------------------------
-char** Game::createGrid(int width, int height) {
-    ///srand((unsigned)time(NULL));    //seeding rand() for testing
-
-    // declare a pointer
-    char** array = 0;
-
-    //allocate memory for pointers
-    array = new char*[width];
-
-    //iterate the width
-    for (int i=0; i<width; ++i) {
-        //allocate memory for chars
-        array[i] = new char[height];
-
-        //iterate the height
-        for (int j=0; j<height; ++j)
-            //set default value
-            array[i][j] = '.';  ///(char)(rand()%25 + 65);   //for testing
-    }
-
-    //return pointer to memory location of new array
-    return array;
-}
-
-
-//---------------------------------------------------
 //  checkWin(char color, int x, int y)
 //
 //  Purpose: Checks if the most recently placed piece
@@ -198,7 +160,7 @@ char** Game::createGrid(int width, int height) {
 //---------------------------------------------------
 bool Game::checkWin(char color, int x, int y) {
     // temporary local variables
-    char **grid = mGameBoard->getGrid();
+    char** grid = mGameBoard->getGrid();
     int width = mGameBoard->getWidth();
     int height = mGameBoard->getHeight();
 
@@ -356,7 +318,7 @@ void Game::clearBoard() {
     int width = mGameBoard->getWidth();
     mGameBoard->~GameBoard();
 
-    mGameBoard = new GameBoard(createGrid(width, height), width, height);
+    mGameBoard = new GameBoard(width, height);
     mGameOver = false;
 }
 

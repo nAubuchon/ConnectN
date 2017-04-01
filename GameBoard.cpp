@@ -23,24 +23,50 @@ GameBoard::GameBoard() {
 
 
 //---------------------------------------------------
-//  GameBoard(char **g, int w, int h)
+//  GameBoard(int width, int height)
 //
 //  Purpose: Initializing constructor, sets mWidth,
 //  mHeight, mGrid (2D char array) and mRows vector
 //
-//  Parameters: (none)
+//  Parameters:
+//      int width -- the width of the array
+//
+//      int height -- the height of the array
 //
 //  Returns: GameBoard object
 //---------------------------------------------------
-GameBoard::GameBoard(char **g, int w, int h) {
-    mWidth = w;
-    mHeight = h;
-    mGrid = g;
+GameBoard::GameBoard(int width, int height) {
+    mWidth = width;
+    mHeight = height;
+    mGrid = createGrid(width, height);
+
+    mRows.reserve((unsigned)width);
+
+    for(int i=0; i<width; ++i)
+        mRows.push_back(0);
+}
+
+
+//---------------------------------------------------
+//  GameBoard(GameBoard* board)
+//
+//  Purpose: Copy Constructor
+//
+//  Parameters:
+//      GameBoard* board -- pointer to the instance
+//      to be copied
+//
+//  Returns: GameBoard object
+//---------------------------------------------------
+GameBoard::GameBoard(GameBoard* board) {
+    mWidth = board->getWidth();
+    mHeight = board->getHeight();
+    mGrid = copyGrid(mWidth, mHeight, board->getGrid());
 
     mRows.reserve((unsigned)mWidth);
 
     for(int i=0; i<mWidth; ++i)
-        mRows.push_back(0);
+        mRows.push_back(board->getRow(i));
 }
 
 
@@ -86,28 +112,97 @@ void GameBoard::printGrid() {
 
 
 //---------------------------------------------------
-//  placePiece(char p, int col)
+//  placePiece(char color, int column)
 //
-//  Purpose: Places char c into the highest slot of
-//  the chosen column (col).  Returns false if the
-//  chosen column is full
+//  Purpose: Places char arg into the highest slot of
+//  the chosen column.  Returns false if the chosen
+//  column is full, otherwise returns true.
 //
 //  Parameters:
-//      char c -- the color of the piece to be placed
+//      char color -- the color of the piece to be placed
 //
-//      int col -- the chosen column
+//      int column -- the chosen column
 //
-//  Returns: (none)
+//  Returns: bool
 //---------------------------------------------------
-bool GameBoard::placePiece(char c, int col) {
-    if((col < mWidth) && (mRows[col] < mHeight) ) {
-        mGrid[col][mRows[col]] = c;
-        mRows[col]++;
+bool GameBoard::placePiece(char color, int column) {
+    if((column < mWidth) && (mRows[column] < mHeight) ) {
+        mGrid[column][mRows[column]] = color;
+        mRows[column]++;
 
         return true;
     }
     else
         return false;
+}
+
+
+//---------------------------------------------------
+//  createGrid(int width, int height)
+//
+//  Purpose: Allocates and returns a pointer to new
+//  memory for a 2D array of chars for the gameBoard
+//  grid
+//
+//  Parameters:
+//      int width -- the width of the grid
+//
+//      int height -- the height of the grid
+//
+//  Returns: char**
+//---------------------------------------------------
+char** GameBoard::createGrid(int width, int height) {
+    // declare a pointer
+    char** array = 0;
+
+    //allocate memory for pointers
+    array = new char*[width];
+
+    //iterate the width
+    for (int i=0; i<width; ++i) {
+        //allocate memory for chars
+        array[i] = new char[height];
+
+        //iterate the height
+        for (int j=0; j<height; ++j)
+            //set default value
+            array[i][j] = '.';
+    }
+
+    //return pointer to memory location of new array
+    return array;
+}
+
+
+//---------------------------------------------------
+//  copyGrid(int width, int height, char** grid)
+//
+//  Purpose: Allocates and returns a pointer to new
+//  memory for a copy of the 2D array of chars for
+//  the game grid
+//
+//  Parameters:
+//      int width -- the width of the grid
+//
+//      int height -- the height of the grid
+//
+//      char** grid -- the 2D array to be copied
+//
+//  Returns: char**
+//---------------------------------------------------
+char** GameBoard::copyGrid(int width, int height, char** grid) {
+    char** array = 0;
+
+    array = new char*[height];
+
+    for (int i=0; i<height; ++i) {
+        array[i] = new char[width];
+
+        for (int j=0; j<width; ++j)
+            array[i][j] = grid[i][j];
+    }
+
+    return array;
 }
 
 
@@ -127,19 +222,20 @@ char** GameBoard::getGrid() {
 
 
 //---------------------------------------------------
-//  getRow(int col)
+//  getRow(int column)
 //
 //  Purpose: Accessor, returns the highest open slot
 //  in the specified column
 //
 //  Parameters:
-//      int col -- the column to look at
+//      int column -- the column to look at
 //
 //  Returns: int
 //---------------------------------------------------
-int GameBoard::getRow(int col) {
-    return mRows[col];
+int GameBoard::getRow(int column) {
+    return mRows[column];
 }
+
 
 //---------------------------------------------------
 //  getHeight()
@@ -151,7 +247,7 @@ int GameBoard::getRow(int col) {
 //
 //  Returns: int
 //---------------------------------------------------
-int GameBoard::getHeight(){
+int GameBoard::getHeight() {
     return mHeight;
 }
 
@@ -166,6 +262,6 @@ int GameBoard::getHeight(){
 //
 //  Returns: int
 //---------------------------------------------------
-int GameBoard::getWidth(){
+int GameBoard::getWidth() {
     return mWidth;
 }

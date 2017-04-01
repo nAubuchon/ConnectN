@@ -14,7 +14,8 @@ class GameBoard {
 public:
     ///constructors
     GameBoard();
-    GameBoard(char**,int,int);
+    GameBoard(int width, int height);
+    GameBoard(GameBoard* board);
 
     ///destructor
     ~GameBoard();
@@ -22,11 +23,13 @@ public:
     ///member functions
     //general usage
     void printGrid();
-    bool placePiece(char, int);
+    bool placePiece(char color, int column);
+    char** createGrid(int width, int height);
+    char** copyGrid(int width, int height, char** grid);
 
     //accessors
     char** getGrid();
-    int getRow(int);
+    int getRow(int column);
     int getHeight();
     int getWidth();
 

@@ -16,13 +16,13 @@ class PlayerHuman {
 public:
     ///constructors
     PlayerHuman();
-    PlayerHuman(string,bool);
+    PlayerHuman(bool isFirst, string name);
 
     ///destructor
     ~PlayerHuman();
 
     ///member functions
-    int takeTurn(GameBoard*);
+    int takeTurn(GameBoard* board);
     char getColor();
     string getName();
 

@@ -14,15 +14,14 @@ class Game {
 public:
     ///constructors
     Game();
-    Game(int,bool);
+    Game(int N, bool playerFirst);
 
     ///destructor
     ~Game();
 
     ///member functions
     void playGame();
-    char** createGrid(int,int);
-    bool checkWin(char,int,int);
+    bool checkWin(char color, int x, int y);
     bool isGameOver();
     void clearBoard();
     void displayBoard();
