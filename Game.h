@@ -21,7 +21,6 @@ public:
 
     ///member functions
     void playGame();
-    bool checkWin(char color, int x, int y);
     bool isGameOver();
     void clearBoard();
     void displayBoard();
@@ -30,7 +29,6 @@ private:
     ///data members
 
     //board data
-    int mN;          //winning number of lined up pieces
     GameBoard* mGameBoard; //the GameBoard object
 
     //players

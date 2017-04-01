@@ -14,7 +14,7 @@ class GameBoard {
 public:
     ///constructors
     GameBoard();
-    GameBoard(int width, int height);
+    GameBoard(int N, int width, int height);
     GameBoard(GameBoard* board);
 
     ///destructor
@@ -24,21 +24,28 @@ public:
     //general usage
     void printGrid();
     bool placePiece(char color, int column);
+    bool checkWin(char color, int x, int y);
     char** createGrid(int width, int height);
     char** copyGrid(int width, int height, char** grid);
 
     //accessors
-    char** getGrid();
-    int getRow(int column);
+    int getN();
     int getHeight();
     int getWidth();
+    char** getGrid();
+    int getRow(int column);
+    int getPieces();
+    bool isFull();
 
 private:
     ///data members
+    int mN;          //winning number of lined up pieces
     int mWidth;  //board width
     int mHeight; //board height
     char** mGrid;    //2D array
     vector<int> mRows;   //keeping track of highest slot
+    int pieces; //the number of pieces placed onto the board
+    bool full;
 };
 
 #endif //CONNECTN_GAMEBOARD_H

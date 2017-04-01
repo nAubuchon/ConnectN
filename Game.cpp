@@ -14,7 +14,6 @@
 //  Returns: Game object
 //---------------------------------------------------
 Game::Game() {
-    mN = 0;
     mGameBoard = NULL;
     mAI = NULL;
     mHuman = NULL;
@@ -40,8 +39,7 @@ Game::Game() {
 Game::Game(int N, bool playerFirst) {
     int width = (2*N) - 1;
     int height = (2*N) - 2;
-    mN = N;
-    mGameBoard = new GameBoard(width, height);
+    mGameBoard = new GameBoard(N, width, height);
     mAI = new PlayerAI(!playerFirst, mGameBoard);
     mHuman = new PlayerHuman(playerFirst, "Nick");
     mGameOver = false;
@@ -59,7 +57,10 @@ Game::Game(int N, bool playerFirst) {
 //---------------------------------------------------
 Game::~Game() {
     cout << "Deleting Everything" << endl;
-    mGameBoard->~GameBoard();
+//    mGameBoard->~GameBoard();
+    delete mGameBoard;
+    delete mAI;
+    delete mHuman;
 }
 
 
@@ -80,19 +81,24 @@ void Game::playGame() {
     int col;
     int row;
 
+    if(mGameBoard->isFull()) {
+        mGameOver = true;
+        return;
+    }
+
     // Human First
     if(mHuman->getColor()=='B') {
         //initiate Human's turn
         col = mHuman->takeTurn(mGameBoard);
 
         //displayColumn
-        displayBoard();
+//        displayBoard();
 
         //get the row where the piece "fell"
         row = mGameBoard->getRow(col) - 1;
 
         // If placed piece won the game, exit function
-        if (checkWin('B', col, row)) {
+        if (mGameBoard->checkWin('B', col, row)) {
             cout << "Black Wins!" << endl;
             mGameOver = true;
             return;
@@ -102,13 +108,13 @@ void Game::playGame() {
         col = mAI->takeTurn(mGameBoard);
 
         //displayColumn
-        displayBoard();
+//        displayBoard();
 
         //get the row where the piece "fell"
         row = mGameBoard->getRow(col) - 1;
 
         // If placed piece won the game, exit function
-        if (checkWin('R', col, row)) {
+        if (mGameBoard->checkWin('R', col, row)) {
             cout << "Red Wins!" << endl;
             mGameOver = true;
             return;
@@ -117,20 +123,20 @@ void Game::playGame() {
     // Same process, but with AI First
     else {
         col = mAI->takeTurn(mGameBoard);
-        displayBoard();
+//        displayBoard();
         row = mGameBoard->getRow(col) - 1;
 
-        if( checkWin('B', col, row)) {
+        if(mGameBoard->checkWin('B', col, row)) {
             cout << "Black Wins!";
             mGameOver = true;
             return;
         }
 
         col = mHuman->takeTurn(mGameBoard);
-        displayBoard();
+//        displayBoard();
         row = mGameBoard->getRow(col) - 1;
 
-        if( checkWin('R', col, row)) {
+        if(mGameBoard->checkWin('R', col, row)) {
             cout << "Red Wins!";
             mGameOver = true;
             return;
@@ -139,151 +145,151 @@ void Game::playGame() {
 }
 
 
-//---------------------------------------------------
-//  checkWin(char color, int x, int y)
+////---------------------------------------------------
+////  checkWin(char color, int x, int y)
+////
+////  Purpose: Checks if the most recently placed piece
+////  results in a win in vertical, horizontal and
+////  diagonal directions.  Returns 'true' if a win,
+////  'false' if not.
+////
+////  Parameters:
+////      char color -- the color of the placed piece
+////
+////      int x -- the horizontal location of the
+////      placed piece
+////
+////      int y -- the vertical location of the
+////      placed piece
+////
+////  Returns: bool
+////---------------------------------------------------
+//bool Game::checkWin(char color, int x, int y) {
+//    // temporary local variables
+//    char** grid = mGameBoard->getGrid();
+//    int width = mGameBoard->getWidth();
+//    int height = mGameBoard->getHeight();
 //
-//  Purpose: Checks if the most recently placed piece
-//  results in a win in vertical, horizontal and
-//  diagonal directions.  Returns 'true' if a win,
-//  'false' if not.
+//    int count = 0;
+//    int i = 0;
 //
-//  Parameters:
-//      char color -- the color of the placed piece
+//    //------------Note--------------
+//    //  + : Up for y, Right for x
+//    //  - : Down for y, Left for x
+//    //------------------------------
 //
-//      int x -- the horizontal location of the
-//      placed piece
+//    //check vertical down
+//    if (y >= mN-1) {
+//        //begin moving down (0,-1)
+//        for (i=1; i<mN; ++i) {
+//            if(y-i < 0)
+//                break;
+//            //break if no match on the piece below
+//            if (grid[x][y-i] != color)
+//                break;
+//            //increment the number of pieces in line
+//            count++;
+//        }
+//        // if the count is at least N-1, it is a win
+//        // (because we're not counting the placed piece)
+//        if(count >= mN-1)
+//            return true;
+//    }
 //
-//      int y -- the vertical location of the
-//      placed piece
+//    //if no completed counts, then reset
+//    count = 0;
 //
-//  Returns: bool
-//---------------------------------------------------
-bool Game::checkWin(char color, int x, int y) {
-    // temporary local variables
-    char** grid = mGameBoard->getGrid();
-    int width = mGameBoard->getWidth();
-    int height = mGameBoard->getHeight();
-
-    int count = 0;
-    int i = 0;
-
-    //------------Note--------------
-    //  + : Up for y, Right for x
-    //  - : Down for y, Left for x
-    //------------------------------
-
-    //check vertical down
-    if (y >= mN-1) {
-        //begin moving down (0,-1)
-        for (i=1; i<mN; ++i) {
-            if(y-i < 0)
-                break;
-            //break if no match on the piece below
-            if (grid[x][y-i] != color)
-                break;
-            //increment the number of pieces in line
-            count++;
-        }
-        // if the count is at least N-1, it is a win
-        // (because we're not counting the placed piece)
-        if(count >= mN-1)
-            return true;
-    }
-
-    //if no completed counts, then reset
-    count = 0;
-
-    //check horizontal left, similar process
-    if (x > 0) {
-        //begin moving left (-1,0)
-        for (i=1; i<mN; ++i) {
-            if (x-i < 0)
-                break;
-            if (grid[x-i][y] != color)
-                break;
-            count++;
-        }
-        if (count >= mN-1)
-            return true;
-    }
-    //check horizontal right, keeping value of count so far
-    if(x < mGameBoard->getWidth() -1) {
-        //begin moving right (+1,0)
-        for (i=1; i<mN; ++i) {
-            if (x+i > width-1)
-                break;
-            if (grid[x+i][y] != color)
-                break;
-            count++;
-        }
-        if (count >= mN-1)
-            return true;
-    }
-
-    //reset count
-    count = 0;
-
-    //check diagonal low left to high right
-    if(y < height-1 && x < width-1) {
-        //begin moving right and up (+1,+1)
-        for (i=1; i<mN; ++i) {
-            if (x+i>width-1 || y+i>height-1)
-                break;
-            if (grid[x+i][y+i] != color)
-                break;
-            count++;
-        }
-        if (count >= mN-1)
-            return true;
-    }
-    //check diagonal high right to low left, keep count
-    if(y>0 && x>0) {
-        //begin moving left and down (-1,-1)
-        for (i=1; i<mN; ++i) {
-            if (x-i<0 || y-i<0)
-                break;
-            if (grid[x-i][y-i] != color)
-                break;
-            count++;
-        }
-        if (count >= mN-1)
-            return true;
-    }
-
-    //reset count
-    count = 0;
-
-    //check diagonal high left to low right
-    if( y>0 && x<(width-1) ) {
-        //begin moving right and down (+1,-1)
-        for (i=1; i<mN; ++i) {
-            if( (x+i)>width-1 || (y-i)<0 )
-                break;
-            if (grid[x+i][y-i] != color)
-                break;
-            count++;
-        }
-        if (count >= mN-1)
-            return true;
-    }
-    //check diagonal low right to high left
-    if( y<(height-1) && x>0 ) {
-        //begin moving left and up (-1,+1)
-        for (i=1; i<mN; ++i) {
-            if(x-i<0 || y+i>height-1)
-                break;
-            if (grid[x-i][y+i] != color)
-                break;
-            count++;
-        }
-        if (count >= mN-1)
-            return true;
-    }
-
-    //if all the above failed, there was no win
-    //so return false
-    return false;
-}
+//    //check horizontal left, similar process
+//    if (x > 0) {
+//        //begin moving left (-1,0)
+//        for (i=1; i<mN; ++i) {
+//            if (x-i < 0)
+//                break;
+//            if (grid[x-i][y] != color)
+//                break;
+//            count++;
+//        }
+//        if (count >= mN-1)
+//            return true;
+//    }
+//    //check horizontal right, keeping value of count so far
+//    if(x < mGameBoard->getWidth() -1) {
+//        //begin moving right (+1,0)
+//        for (i=1; i<mN; ++i) {
+//            if (x+i > width-1)
+//                break;
+//            if (grid[x+i][y] != color)
+//                break;
+//            count++;
+//        }
+//        if (count >= mN-1)
+//            return true;
+//    }
+//
+//    //reset count
+//    count = 0;
+//
+//    //check diagonal low left to high right
+//    if(y < height-1 && x < width-1) {
+//        //begin moving right and up (+1,+1)
+//        for (i=1; i<mN; ++i) {
+//            if (x+i>width-1 || y+i>height-1)
+//                break;
+//            if (grid[x+i][y+i] != color)
+//                break;
+//            count++;
+//        }
+//        if (count >= mN-1)
+//            return true;
+//    }
+//    //check diagonal high right to low left, keep count
+//    if(y>0 && x>0) {
+//        //begin moving left and down (-1,-1)
+//        for (i=1; i<mN; ++i) {
+//            if (x-i<0 || y-i<0)
+//                break;
+//            if (grid[x-i][y-i] != color)
+//                break;
+//            count++;
+//        }
+//        if (count >= mN-1)
+//            return true;
+//    }
+//
+//    //reset count
+//    count = 0;
+//
+//    //check diagonal high left to low right
+//    if( y>0 && x<(width-1) ) {
+//        //begin moving right and down (+1,-1)
+//        for (i=1; i<mN; ++i) {
+//            if( (x+i)>width-1 || (y-i)<0 )
+//                break;
+//            if (grid[x+i][y-i] != color)
+//                break;
+//            count++;
+//        }
+//        if (count >= mN-1)
+//            return true;
+//    }
+//    //check diagonal low right to high left
+//    if( y<(height-1) && x>0 ) {
+//        //begin moving left and up (-1,+1)
+//        for (i=1; i<mN; ++i) {
+//            if(x-i<0 || y+i>height-1)
+//                break;
+//            if (grid[x-i][y+i] != color)
+//                break;
+//            count++;
+//        }
+//        if (count >= mN-1)
+//            return true;
+//    }
+//
+//    //if all the above failed, there was no win
+//    //so return false
+//    return false;
+//}
 
 
 //---------------------------------------------------
@@ -314,11 +320,12 @@ bool Game::isGameOver() {
 //  Returns: void
 //---------------------------------------------------
 void Game::clearBoard() {
+    int N = mGameBoard->getN();
     int height = mGameBoard->getHeight();
     int width = mGameBoard->getWidth();
-    mGameBoard->~GameBoard();
+    delete mGameBoard;
 
-    mGameBoard = new GameBoard(width, height);
+    mGameBoard = new GameBoard(N, width, height);
     mGameOver = false;
 }
 

@@ -56,7 +56,7 @@ PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
 //  Returns: (none)
 //---------------------------------------------------
 PlayerAI::~PlayerAI() {
-
+    delete mBoardCopy;
 }
 
 
