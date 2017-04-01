@@ -156,7 +156,7 @@ char** PlayerAI::copyGrid(int width, int height, char** grid) {
 }
 
 int PlayerAI::minimax(GameBoard board, int col, int currentDepth, bool isMax) {
-	
+
 	if (isMax && board.placePiece('B', col)) {
 		return board.getScore('B');
 	}
