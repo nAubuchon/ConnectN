@@ -25,11 +25,16 @@ public:
     int takeTurn(GameBoard*);
     char getColor();
     char** copyGrid(int,int,char**);
+	
+	int minimax(GameBoard, int, int, bool);
 
 private:
     ///data members
     char mColor;
     GameBoard* mBoardCopy;
+	int mAlpha;
+	int mBeta;
+	int mDepth;
 };
 
 #endif //CONNECTN_PLAYERAI_H

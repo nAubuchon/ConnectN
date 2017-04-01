@@ -158,3 +158,19 @@ char** PlayerAI::copyGrid(int width, int height, char** grid) {
 
     return array;
 }
+
+int PlayerAI::minimax(GameBoard board, int col, int currentDepth, bool isMax) {
+	
+	if (isMax && board.placePiece('B', col)) {
+		return board.getScore('B');
+	}
+	else if (board.placePiece('W', col)) {
+		return board.getScore('W');
+	}
+
+	currentDepth++;
+	for (int col = 0; col < board.getWidth; col++) {
+		return minimax(board, col, currentDepth, !isMax);
+	}
+}
+
