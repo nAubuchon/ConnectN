@@ -43,6 +43,7 @@ PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
 
     //call the copy constructor
     mBoardCopy = new GameBoard(board);
+    mBoardCopy->printGrid();
 }
 
 

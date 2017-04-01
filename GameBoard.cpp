@@ -346,12 +346,12 @@ char** GameBoard::createGrid(int width, int height) {
 //  Returns: char**
 //---------------------------------------------------
 char** GameBoard::copyGrid(int width, int height, char** grid) {
-    char** array = new char*[height];
+    char** array = new char*[width];
 
-    for (int i=0; i<height; ++i) {
-        array[i] = new char[width];
+    for (int i=0; i<width; ++i) {
+        array[i] = new char[height];
 
-        for (int j=0; j<width; ++j)
+        for (int j=0; j<height; ++j)
             array[i][j] = grid[i][j];
     }
 

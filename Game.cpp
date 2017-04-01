@@ -92,7 +92,7 @@ void Game::playGame() {
         col = mHuman->takeTurn(mGameBoard);
 
         //displayColumn
-//        displayBoard();
+        displayBoard();
 
         //get the row where the piece "fell"
         row = mGameBoard->getRow(col) - 1;
@@ -108,7 +108,7 @@ void Game::playGame() {
         col = mAI->takeTurn(mGameBoard);
 
         //displayColumn
-//        displayBoard();
+        displayBoard();
 
         //get the row where the piece "fell"
         row = mGameBoard->getRow(col) - 1;
@@ -123,7 +123,7 @@ void Game::playGame() {
     // Same process, but with AI First
     else {
         col = mAI->takeTurn(mGameBoard);
-//        displayBoard();
+        displayBoard();
         row = mGameBoard->getRow(col) - 1;
 
         if(mGameBoard->checkWin('B', col, row)) {
@@ -133,7 +133,7 @@ void Game::playGame() {
         }
 
         col = mHuman->takeTurn(mGameBoard);
-//        displayBoard();
+        displayBoard();
         row = mGameBoard->getRow(col) - 1;
 
         if(mGameBoard->checkWin('R', col, row)) {
