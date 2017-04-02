@@ -26,15 +26,13 @@ public:
     char getColor();
 
     char** copyGrid(int,int,char**);
-	int minimax(GameBoard, int, int, bool);
+	int minimax(GameBoard, int, int, int, int, bool);
 
 private:
     ///data members
     char mColor;
     GameBoard* mBoardCopy;
-	int mAlpha;
-	int mBeta;
-	int mDepth;
+	const int MAX_DEPTH = 6;
 };
 
 #endif //CONNECTN_PLAYERAI_H

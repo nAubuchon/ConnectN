@@ -14,8 +14,8 @@ class GameBoard {
 public:
     ///constructors
     GameBoard();
-    GameBoard(int width, int height);
-    GameBoard(GameBoard* board);
+    GameBoard(int, int);
+    GameBoard(GameBoard*);
 
     ///destructor
     ~GameBoard();

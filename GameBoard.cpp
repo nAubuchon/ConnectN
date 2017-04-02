@@ -4,8 +4,6 @@
 
 #include "GameBoard.h"
 
-using namespace std;
-
 //---------------------------------------------------
 //  GameBoard()
 //

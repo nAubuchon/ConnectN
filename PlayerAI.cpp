@@ -96,16 +96,33 @@ PlayerAI::~PlayerAI() {
 
 ///// For Testing Purposes***
 int PlayerAI::takeTurn(GameBoard* board) {
-    int x = 0;
+//    int x = 0;
 
-    while(true) {
-        x = (rand()%7);
+//    while(true) {
+//        x = (rand()%7);
 
-        if (board->placePiece(mColor, x))
-            break;
-    }
+//        if (board->placePiece(mColor, x))
+//            break;
+//    }
+//  return x;
 
-    return x;
+	// Root of tree
+	int score = 0;
+	int alpha = -100;
+	int beta = 100;
+	for (int col = 0; col < board->getWidth(); col++) {
+		score = minimax(board, col, alpha, beta, 1, false);
+
+		if (score > alpha) {
+			alpha = score;
+		}
+		// Check to see if branch needs to be PRUNED
+		if (alpha >= beta) {
+			break;
+		}
+	}
+
+	return score;
 }
 ///// ***********************
 
@@ -155,17 +172,44 @@ char** PlayerAI::copyGrid(int width, int height, char** grid) {
     return array;
 }
 
-int PlayerAI::minimax(GameBoard board, int col, int currentDepth, bool isMax) {
 
-	if (isMax && board.placePiece('B', col)) {
-		return board.getScore('B');
-	}
-	else if (board.placePiece('W', col)) {
-		return board.getScore('W');
-	}
+// Purpose: Runs the minimax algorithm with 
+// Alpha Beta pruning.
+//
+// Returns: The score that results when reaching 
+// the bottom of the tree
+
+// Obviously, this doesn't work yet.
+int PlayerAI::minimax(GameBoard board, 
+	int col, int alpha, int beta, int currentDepth, 
+	bool isMax) {
+
+	// if bottom of tree is reached or making a move fails
+	if (!board.placePiece(isMax ? 'B' : 'W', col) 
+		|| currentDepth == MAX_DEPTH) {
+		return board.getScore(isMax ? 'B' : 'W');
+	} 
 
 	currentDepth++;
-	for (int col = 0; col < board.getWidth; col++) {
-		return minimax(board, col, currentDepth, !isMax);
-	}
+	int score = 0;
+
+	// Go down nodes
+	for (int col = 0; col < board.getWidth(); col++) {
+		score = minimax(board, col, alpha, beta, currentDepth, !isMax);
+
+		// Pruning checks
+		// If on MAX NODE
+		if (isMax && score > alpha) {
+			alpha = score;
+		}
+		// If on MIN NODE
+		else if (score < beta) {
+			beta = score;
+		}
+		// Check to see if branch needs to be PRUNED
+		if (alpha >= beta) {
+			break;
+		}
+	} 
+	return score;
 }
