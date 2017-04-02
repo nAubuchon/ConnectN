@@ -108,13 +108,16 @@ int PlayerAI::takeTurn(GameBoard* board) {
 
 	// Root of tree
 	int score = 0;
-	int alpha = -100;
-	int beta = 100;
+	int alpha = -1000;
+	int beta = 1000;
+	int bestMove = 0;
 	for (int col = 0; col < board->getWidth(); col++) {
 		score = minimax(board, col, alpha, beta, 1, false);
 
+		// Check for MAX
 		if (score > alpha) {
 			alpha = score;
+			bestMove = col;
 		}
 		// Check to see if branch needs to be PRUNED
 		if (alpha >= beta) {
@@ -122,7 +125,7 @@ int PlayerAI::takeTurn(GameBoard* board) {
 		}
 	}
 
-	return score;
+	return bestMove;
 }
 ///// ***********************
 
