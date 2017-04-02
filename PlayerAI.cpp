@@ -43,7 +43,6 @@ PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
 
     //call the copy constructor
     mBoardCopy = new GameBoard(board);
-    mBoardCopy->printGrid();
 }
 
 
@@ -74,40 +73,40 @@ PlayerAI::~PlayerAI() {
 //
 //  Returns: int
 //---------------------------------------------------
-//int PlayerAI::takeTurn(GameBoard* board) {
-//    int choice = 0;
-//
-//    ///*****************FOR TESTING******************
-//    while(true) {
-//        cout << "(AI) Please Choose a Column: ";
-//        cin >> choice;
-//        if( !cin ) {  //user didn't input a number
-//            cout << "Invalid Input..." << endl << endl;
-//            cin.clear();
-//            cin.ignore(100, '\n'); //skip bad input
-//        }
-//        else if( board->placePiece(mColor, choice) )
-//            break;
-//        else    //user selected a full or non-existent column
-//            cout << "Invalid Selection..." << endl << endl;
-//    }///*****************FOR TESTING******************
-//
-//    return choice;
-//}
+int PlayerAI::takeTurn(GameBoard* board) {
+    int choice = 0;
+
+    ///*****************FOR TESTING******************
+    while(true) {
+        cout << "(AI) Please Choose a Column: ";
+        cin >> choice;
+        if( !cin ) {  //user didn't input a number
+            cout << "Invalid Input..." << endl << endl;
+            cin.clear();
+            cin.ignore(100, '\n'); //skip bad input
+        }
+        else if( board->placePiece(mColor, choice) )
+            break;
+        else    //user selected a full or non-existent column
+            cout << "Invalid Selection..." << endl << endl;
+    }///*****************FOR TESTING******************
+
+    return choice;
+}
 
 ///// For Testing Purposes***
-int PlayerAI::takeTurn(GameBoard* board) {
-    int x = 0;
-
-    while(true) {
-        x = (rand()%7);
-
-        if (board->placePiece(mColor, x))
-            break;
-    }
-
-    return x;
-}
+//int PlayerAI::takeTurn(GameBoard* board) {
+//    int x = 0;
+//
+//    while(true) {
+//        x = (rand()%7);
+//
+//        if (board->placePiece(mColor, x))
+//            break;
+//    }
+//
+//    return x;
+//}
 ///// ***********************
 
 

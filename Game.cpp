@@ -104,6 +104,9 @@ void Game::playGame() {
             return;
         }
 
+        ///testing
+        cout << "--Scores--\n" << "Black: " << mGameBoard->getScore('B') << "\nRed: " << mGameBoard->getScore('R') << endl;
+
         //initiate AI's turn
         col = mAI->takeTurn(mGameBoard);
 
@@ -119,6 +122,9 @@ void Game::playGame() {
             mGameOver = true;
             return;
         }
+
+        ///testing
+        cout << "--Scores--\n" << "Black: " << mGameBoard->getScore('B') << "\nRed: " << mGameBoard->getScore('R') << endl;
     }
     // Same process, but with AI First
     else {
@@ -132,6 +138,9 @@ void Game::playGame() {
             return;
         }
 
+        ///testing
+        cout << "--Scores--\n" << "Black: " << mGameBoard->getScore('B') << "\nRed: " << mGameBoard->getScore('R') << endl;
+
         col = mHuman->takeTurn(mGameBoard);
         displayBoard();
         row = mGameBoard->getRow(col) - 1;
@@ -141,6 +150,9 @@ void Game::playGame() {
             mGameOver = true;
             return;
         }
+
+        ///testing
+        cout << "--Scores--\n" << "Black: " << mGameBoard->getScore('B') << "\nRed: " << mGameBoard->getScore('R') << endl;
     }
 }
 

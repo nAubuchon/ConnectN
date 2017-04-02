@@ -182,7 +182,7 @@ bool GameBoard::checkWin(char color, int x, int y) {
     //------------------------------
 
     //check vertical down
-    if (y >= mN-1) {
+    if (y >= mN-2) {
         //begin moving down (0,-1)
         for (i=1; i<mN; ++i) {
             if(y-i < 0)
@@ -193,10 +193,13 @@ bool GameBoard::checkWin(char color, int x, int y) {
             //increment the number of pieces in line
             count++;
         }
+
         // if the count is at least N-1, it is a win
         // (because we're not counting the placed piece)
         if(count >= mN-1)
             return true;
+        else if(count==mN-2)
+            setScore(color);
     }
 
     //if no completed counts, then reset
@@ -208,8 +211,11 @@ bool GameBoard::checkWin(char color, int x, int y) {
         for (i=1; i<mN; ++i) {
             if (x-i < 0)
                 break;
-            if (mGrid[x-i][y] != color)
+            if (mGrid[x-i][y] != color) {
+                if(count==mN-2 && mGrid[x-i][y]=='.')
+                    setScore(color);
                 break;
+            }
             count++;
         }
         if (count >= mN-1)
@@ -221,8 +227,11 @@ bool GameBoard::checkWin(char color, int x, int y) {
         for (i=1; i<mN; ++i) {
             if (x+i > mWidth-1)
                 break;
-            if (mGrid[x+i][y] != color)
+            if (mGrid[x+i][y] != color) {
+                if(count==mN-2 && mGrid[x+i][y]=='.')
+                    setScore(color);
                 break;
+            }
             count++;
         }
         if (count >= mN-1)
@@ -238,8 +247,11 @@ bool GameBoard::checkWin(char color, int x, int y) {
         for (i=1; i<mN; ++i) {
             if (x+i>mWidth-1 || y+i>mHeight-1)
                 break;
-            if (mGrid[x+i][y+i] != color)
+            if (mGrid[x+i][y+i] != color) {
+                if(count==mN-2 && mGrid[x+i][y+i]=='.')
+                    setScore(color);
                 break;
+            }
             count++;
         }
         if (count >= mN-1)
@@ -251,8 +263,11 @@ bool GameBoard::checkWin(char color, int x, int y) {
         for (i=1; i<mN; ++i) {
             if (x-i<0 || y-i<0)
                 break;
-            if (mGrid[x-i][y-i] != color)
+            if (mGrid[x-i][y-i] != color) {
+                if(count==mN-2 && mGrid[x-i][y-i]=='.')
+                    setScore(color);
                 break;
+            }
             count++;
         }
         if (count >= mN-1)
@@ -268,8 +283,11 @@ bool GameBoard::checkWin(char color, int x, int y) {
         for (i=1; i<mN; ++i) {
             if( (x+i)>mWidth-1 || (y-i)<0 )
                 break;
-            if (mGrid[x+i][y-i] != color)
+            if (mGrid[x+i][y-i] != color) {
+                if(count==mN-2 && mGrid[x+i][y-i]=='.')
+                    setScore(color);
                 break;
+            }
             count++;
         }
         if (count >= mN-1)
@@ -281,8 +299,11 @@ bool GameBoard::checkWin(char color, int x, int y) {
         for (i=1; i<mN; ++i) {
             if(x-i<0 || y+i>mHeight-1)
                 break;
-            if (mGrid[x-i][y+i] != color)
+            if (mGrid[x-i][y+i] != color) {
+                if(count==mN-2 && mGrid[x-i][y+i]=='.')
+                    setScore(color);
                 break;
+            }
             count++;
         }
         if (count >= mN-1)
@@ -292,6 +313,25 @@ bool GameBoard::checkWin(char color, int x, int y) {
     //if all the above failed, there was no win
     //so return false
     return false;
+}
+
+
+//---------------------------------------------------
+//  setScore(char color)
+//
+//  Purpose: Mutator, increments the score for the
+//  specified color
+//
+//  Parameters:
+//      char color -- the color of the score to add
+//
+//  Returns: void
+//---------------------------------------------------
+void GameBoard::setScore(char color) {
+    if(color=='B')
+        bScore++;
+    else if(color == 'R')
+        rScore++;
 }
 
 
@@ -464,3 +504,21 @@ bool GameBoard::isFull() {
     return full;
 }
 
+
+//---------------------------------------------------
+//  getScore(char color)
+//
+//  Purpose: Accessor, returns the heuristic score
+//  of the specified color
+//
+//  Parameters:
+//      char color -- the color to analyze
+//
+//  Returns: int
+//---------------------------------------------------
+int GameBoard::getScore(char color) {
+    if(color=='B')
+        return bScore;
+    else if(color == 'R')
+        return rScore;
+}

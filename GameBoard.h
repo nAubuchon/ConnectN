@@ -25,6 +25,7 @@ public:
     void printGrid();
     bool placePiece(char color, int column);
     bool checkWin(char color, int x, int y);
+    void setScore(char color);
     char** createGrid(int width, int height);
     char** copyGrid(int width, int height, char** grid);
 
@@ -36,6 +37,7 @@ public:
     int getRow(int column);
     int getPieces();
     bool isFull();
+    int getScore(char color);
 
 private:
     ///data members
@@ -45,7 +47,10 @@ private:
     char** mGrid;    //2D array
     vector<int> mRows;   //keeping track of highest slot
     int pieces; //the number of pieces placed onto the board
-    bool full;
+    bool full;  //if the board is full
+    int rScore; //the number of "almost wins" for red
+    int bScore; //the number of "almost wins" for black
+
 };
 
 #endif //CONNECTN_GAMEBOARD_H
