@@ -111,26 +111,30 @@ int PlayerAI::takeTurn(GameBoard* board) {
 //    }
 //  return x;
 
-	// Root of tree
+// Root of tree
+
+	GameBoard boardCopy = new GameBoard(board);
 	int score = 0;
 	int alpha = -1000;
 	int beta = 1000;
 	int bestMove = 0;
 	for (int col = 0; col < board->getWidth(); col++) {
-		score = minimax(new GameBoard(board), col, alpha, beta, 1, false);
-
-		// Check for MAX
-		if (score > alpha) {
-			alpha = score;
-			bestMove = col;
-		}
-		// Check to see if branch needs to be PRUNED
-		if (alpha >= beta) {
-			break;
+		// Place piece in board. Then pass new board state.
+		if (boardCopy.placePiece(mColor, col)) { 
+			score = minimax(new GameBoard(boardCopy), col, alpha, beta, 1, false);
+			// Check for MAX
+			if (score > alpha) {
+				alpha = score;
+				bestMove = col;
+			}
+			// Check to see if branch needs to be PRUNED
+			if (alpha >= beta) {
+				break;
+			}
 		}
 	}
 
-	cout << "---> Best move" << bestMove << endl;
+	cout << "---> Best move " << bestMove << endl;
 
 	board->placePiece(mColor, bestMove);
 
@@ -197,35 +201,40 @@ int PlayerAI::minimax(GameBoard board,
 	int col, int alpha, int beta, int currentDepth,
 	bool isMax) {
 
-	cout << "Depth: " << currentDepth << (isMax ? " Max" : " Min") << " --- Column: " << col << endl;
-	// if bottom of tree is reached or making a move fails
-	if (!board.placePiece(isMax ? mColor : mPlayerColor, col)
-		|| currentDepth == MAX_DEPTH) {
-		return board.getScore(isMax ? mColor : mPlayerColor);
-	}
+	//cout << "------------------------------------" << endl
+	//	<< "Depth: " << currentDepth << (isMax ? " Max" : " Min") << " --- Column: " << col << endl
+	//	<< "Alpha: " << alpha << beta << endl;
+
+	// If at the max branch
+	if (currentDepth == MAX_DEPTH) {
+		return board.getScore(isMax ? mColor : mPlayerColor);;
+	} 
 
 	currentDepth++;
 	int score = 0;
+	GameBoard boardCopy = new GameBoard(board);
 
 	// Go down nodes
 	for (int col = 0; col < board.getWidth(); col++) {
-		score = minimax(new GameBoard(board), col, alpha, beta, currentDepth, !isMax);
+		if (boardCopy.placePiece(isMax ? mColor : mPlayerColor, col)) {
+			score = minimax(new GameBoard(boardCopy), col, alpha, beta, currentDepth, !isMax);
 
-		// Pruning checks
-		// If on MAX NODE
-		if (isMax && score > alpha) {
-			alpha = score;
-		}
-		// If on MIN NODE
-		else if (score < beta) {
-			beta = score;
-		}
-		// Check to see if branch needs to be PRUNED
-		if (alpha >= beta) {
-			break;
+			// Pruning checks
+			// If on MAX NODE
+			if (isMax && score > alpha) {
+				alpha = score;
+			}
+			// If on MIN NODE
+			else if (score < beta) {
+				beta = score;
+			}
+			// Check to see if branch needs to be PRUNED
+			if (alpha >= beta) {
+				break;
+			}
 		}
 	}
-	cout << (isMax ? "Max" : "Min") << " --- Column: " << col << endl
-		<< "Score: "  << score << endl;
+	//cout << (isMax ? "Max" : "Min") << " --- Column: " << col << endl
+	//	<< "Score: "  << score << endl;
 	return score;
 }
