@@ -16,6 +16,7 @@
 //---------------------------------------------------
 PlayerAI::PlayerAI() {
     mColor = ' ';
+	mPlayerColor = ' ';
     mBoardCopy = NULL;
 }
 
@@ -36,10 +37,14 @@ PlayerAI::PlayerAI() {
 //  Returns: PlayerAI object
 //---------------------------------------------------
 PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
-    if(isFirst)
-        mColor = 'B';
-    else
-        mColor = 'R';
+	if (isFirst) {
+		mColor = 'B';
+		mPlayerColor = 'R';
+	}
+	else {
+		mColor = 'R';
+		mPlayerColor = 'B';
+	}
 
     //call the copy constructor
     mBoardCopy = new GameBoard(board);
@@ -112,7 +117,7 @@ int PlayerAI::takeTurn(GameBoard* board) {
 	int beta = 1000;
 	int bestMove = 0;
 	for (int col = 0; col < board->getWidth(); col++) {
-		score = minimax(board, col, alpha, beta, 1, false);
+		score = minimax(new GameBoard(board), col, alpha, beta, 1, false);
 
 		// Check for MAX
 		if (score > alpha) {
@@ -124,6 +129,10 @@ int PlayerAI::takeTurn(GameBoard* board) {
 			break;
 		}
 	}
+
+	cout << "---> Best move" << bestMove << endl;
+
+	board->placePiece(mColor, bestMove);
 
 	return bestMove;
 }
@@ -175,30 +184,32 @@ char** PlayerAI::copyGrid(int width, int height, char** grid) {
     return array;
 }
 
-
-// Purpose: Runs the minimax algorithm with 
+//--------------------------------------------------
+// Purpose: Runs the minimax algorithm with
 // Alpha Beta pruning.
 //
-// Returns: The score that results when reaching 
+// Returns: The score that results when reaching
 // the bottom of the tree
-
+//
 // Obviously, this doesn't work yet.
-int PlayerAI::minimax(GameBoard board, 
-	int col, int alpha, int beta, int currentDepth, 
+//--------------------------------------------------
+int PlayerAI::minimax(GameBoard board,
+	int col, int alpha, int beta, int currentDepth,
 	bool isMax) {
 
+	cout << "Depth: " << currentDepth << (isMax ? " Max" : " Min") << " --- Column: " << col << endl;
 	// if bottom of tree is reached or making a move fails
-	if (!board.placePiece(isMax ? 'B' : 'W', col) 
+	if (!board.placePiece(isMax ? mColor : mPlayerColor, col)
 		|| currentDepth == MAX_DEPTH) {
-		return board.getScore(isMax ? 'B' : 'W');
-	} 
+		return board.getScore(isMax ? mColor : mPlayerColor);
+	}
 
 	currentDepth++;
 	int score = 0;
 
 	// Go down nodes
 	for (int col = 0; col < board.getWidth(); col++) {
-		score = minimax(board, col, alpha, beta, currentDepth, !isMax);
+		score = minimax(new GameBoard(board), col, alpha, beta, currentDepth, !isMax);
 
 		// Pruning checks
 		// If on MAX NODE
@@ -213,6 +224,8 @@ int PlayerAI::minimax(GameBoard board,
 		if (alpha >= beta) {
 			break;
 		}
-	} 
+	}
+	cout << (isMax ? "Max" : "Min") << " --- Column: " << col << endl
+		<< "Score: "  << score << endl;
 	return score;
 }

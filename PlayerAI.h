@@ -31,8 +31,9 @@ public:
 private:
     ///data members
     char mColor;
+	char mPlayerColor;
     GameBoard* mBoardCopy;
-	const int MAX_DEPTH = 6;
+    static const int MAX_DEPTH = 3;
 };
 
 #endif //CONNECTN_PLAYERAI_H

@@ -124,9 +124,11 @@ void GameBoard::printGrid() {
 //  Returns: bool
 //---------------------------------------------------
 bool GameBoard::placePiece(char color, int column) {
-    if((column < mWidth) && (mRows[column] < mHeight) ) {
+    if((column >= 0) && (column < mWidth) && (mRows[column] < mHeight) ) {
         mGrid[column][mRows[column]] = color;
         mRows[column]++;
+
+
 
         return true;
     }
@@ -191,12 +193,12 @@ char** GameBoard::createGrid(int width, int height) {
 char** GameBoard::copyGrid(int width, int height, char** grid) {
     char** array = 0;
 
-    array = new char*[height];
+    array = new char*[width];
 
-    for (int i=0; i<height; ++i) {
-        array[i] = new char[width];
+    for (int i=0; i<width; ++i) {
+        array[i] = new char[height];
 
-        for (int j=0; j<width; ++j)
+        for (int j=0; j<height; ++j)
             array[i][j] = grid[i][j];
     }
 
@@ -265,5 +267,5 @@ int GameBoard::getWidth() {
 }
 
 int GameBoard::getScore(char color) {
-	return 0;
+	return (rand() % 7);
 }
