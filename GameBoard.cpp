@@ -4,8 +4,6 @@
 
 #include "GameBoard.h"
 
-using namespace std;
-
 //---------------------------------------------------
 //  GameBoard()
 //
@@ -145,7 +143,6 @@ bool GameBoard::placePiece(char color, int column) {
 
         if(pieces<1)
             full = true;
-
         return true;
     }
     else
@@ -387,7 +384,7 @@ char** GameBoard::createGrid(int width, int height) {
 //---------------------------------------------------
 char** GameBoard::copyGrid(int width, int height, char** grid) {
     char** array = new char*[width];
-
+    array = new char*[width];
     for (int i=0; i<width; ++i) {
         array[i] = new char[height];
 
@@ -517,8 +514,8 @@ bool GameBoard::isFull() {
 //  Returns: int
 //---------------------------------------------------
 int GameBoard::getScore(char color) {
-    if(color=='B')
-        return bScore;
-    else if(color == 'R')
-        return rScore;
+	if (color == 'B')
+		return bScore;
+	else if (color == 'R')
+		return rScore;
 }

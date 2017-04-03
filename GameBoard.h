@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -14,8 +15,8 @@ class GameBoard {
 public:
     ///constructors
     GameBoard();
-    GameBoard(int N, int width, int height);
-    GameBoard(GameBoard* board);
+    GameBoard(int, int, int);
+    GameBoard(GameBoard*);
 
     ///destructor
     ~GameBoard();
@@ -37,7 +38,7 @@ public:
     int getRow(int column);
     int getPieces();
     bool isFull();
-    int getScore(char color);
+	int getScore(char);
 
 private:
     ///data members
