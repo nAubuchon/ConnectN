@@ -94,7 +94,7 @@ int PlayerAI::takeTurn(GameBoard* board) {
     return choice;
 }
 
-///// For Testing Purposes***
+/// For Testing Purposes***
 //int PlayerAI::takeTurn(GameBoard* board) {
 //    int x = 0;
 //
@@ -107,7 +107,7 @@ int PlayerAI::takeTurn(GameBoard* board) {
 //
 //    return x;
 //}
-///// ***********************
+/// ***********************
 
 
 //---------------------------------------------------
