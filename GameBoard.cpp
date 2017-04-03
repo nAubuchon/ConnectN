@@ -127,9 +127,6 @@ bool GameBoard::placePiece(char color, int column) {
     if((column >= 0) && (column < mWidth) && (mRows[column] < mHeight) ) {
         mGrid[column][mRows[column]] = color;
         mRows[column]++;
-
-
-
         return true;
     }
     else
