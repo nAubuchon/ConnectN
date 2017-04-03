@@ -100,12 +100,10 @@ PlayerAI::~PlayerAI() {
 //}
 
 int PlayerAI::takeTurn(GameBoard* board) {
-	///// For Testing Purposes***
+// For Testing Purposes***
 //    int x = 0;
-
 //    while(true) {
 //        x = (rand()%7);
-
 //        if (board->placePiece(mColor, x))
 //            break;
 //    }
@@ -207,7 +205,7 @@ int PlayerAI::minimax(GameBoard board,
 	// If at the max branch
 	if (currentDepth == MAX_DEPTH) {
 		return board.getScore(isMax ? mColor : mPlayerColor);;
-	} 
+	}
 
 	currentDepth++;
 	int score = 0;
