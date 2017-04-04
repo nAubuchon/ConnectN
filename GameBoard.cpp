@@ -26,7 +26,7 @@ GameBoard::GameBoard(int N, int width, int height) {
     mWidth = width;
     mHeight = height;
     mGrid = createGrid(width, height);
-    wins = createGrid(width, height);
+    scores = createGrid(width, height);
 
     mRows.reserve((unsigned)width);
 
@@ -35,8 +35,7 @@ GameBoard::GameBoard(int N, int width, int height) {
 
     pieces = width*height;
     full = false;
-    bScore = 0;
-    rScore = 0;
+    totalScore = 0;
 }
 
 
@@ -55,7 +54,7 @@ GameBoard::GameBoard(GameBoard* board) {
     mWidth = board->getWidth();
     mHeight = board->getHeight();
     mGrid = copyGrid(mWidth, mHeight, board->getGrid());
-    wins = copyGrid(mWidth, mHeight, board->getGrid());
+    scores = copyGrid(mWidth, mHeight, board->getGrid());
 
     mRows.reserve((unsigned)mWidth);
     for(int i=0; i<mWidth; ++i)
@@ -63,8 +62,7 @@ GameBoard::GameBoard(GameBoard* board) {
 
     pieces = board->getPieces();
     full = board->isFull();
-    bScore = board->getScore('B');
-    rScore = board->getScore('R');
+    totalScore = board->getScore();
 }
 
 
@@ -81,10 +79,10 @@ GameBoard::~GameBoard() { // this may need some work
     //delete the grid
     for(int j=0; j<mWidth; ++j) {
         delete[] mGrid[j];
-        delete[] wins[j];
+        delete[] scores[j];
     }
     delete[] mGrid;
-    delete[] wins;
+    delete[] scores;
 }
 
 
@@ -108,13 +106,14 @@ void GameBoard::printGrid() {
 }
 
 
-void GameBoard::printWins() {
+void GameBoard::printScores() {
     cout << "Scores:" << endl;
     for (int j=(mHeight-1); j>=0; --j) {
         for(int i=0; i<mWidth; ++i)
-            cout << wins[i][j] << " ";
+            cout << scores[i][j] << " ";
         cout << endl;
     }
+    cout << "Score: " << totalScore << endl;
 }
 
 
@@ -167,18 +166,27 @@ bool GameBoard::placePiece(char color, int column) {
 //
 //  Returns: bool
 //---------------------------------------------------
-bool GameBoard::checkWin(char player, int x, int y) {
-    return checkVert(player, x,y) || checkHorz(player, x, y) || checkDiag1(player, x, y) || checkDiag2(player, x, y);
+bool GameBoard::checkWin(char player, bool isAI, int x, int y) {
+    ///TESTING***********
+    bool poop = checkVert(player, isAI, x,y) || checkHorz(player, isAI, x, y)
+                || checkDiag1(player, isAI, x, y) || checkDiag2(player, isAI, x, y);
+
+    printScores();
+
+    return poop;
+    ///TESTING***********
+//    return checkVert(player, isAI, x,y) || checkHorz(player, isAI, x, y)
+//           || checkDiag1(player, isAI, x, y) || checkDiag2(player, isAI, x, y);
 }
 
 
-bool GameBoard::checkVert(char player, int x, int y) {
+bool GameBoard::checkVert(char player, bool isAI, int x, int y) {
     //------------Note--------------
     //  + : Up
     //  - : Down
     //------------------------------
 
-    int count = 1;
+    int score = 0;
     int i = 1;
 
     //check vertical down
@@ -188,27 +196,27 @@ bool GameBoard::checkVert(char player, int x, int y) {
             if(mGrid[x][y-i]!=player)
                 break;
             else
-                count++;
+                score++;
             i++;
         }
         //if count1 is at least N, it's a win
-        if(count >= mN) {
-            setScore(player, false, x, y);
+        if(score + 1 >= mN) {
+            setScore(1000, player, isAI, x, y);
             return true;
         }
         //if there's now a setup for a win
-        else if(count == mN-1 && y < mHeight-1)
-            setScore(player, true, x, y+1);
+        else if(score + 1 == mN-1 && y < mHeight-1)
+            setScore(100, player, isAI, x, y+1);
 
         //if win blocked
-        setScore(player, false, x, y);
+        setScore(score, player, isAI, x, y);
     }
 
     return false;
 }
 
 
-bool GameBoard::checkHorz(char player, int x, int y) {
+bool GameBoard::checkHorz(char player, bool isAI, int x, int y) {
     //------------Note--------------
     //  + : Right
     //  - : Left
@@ -216,16 +224,16 @@ bool GameBoard::checkHorz(char player, int x, int y) {
 
     int L = 1;
     int R = 1;
-    int countScoreL = 0;
-    int countScoreR = 0;
+    int inLineL = 0;
+    int inLineR = 0;
+    int scoreL = 0;
+    int scoreR = 0;
     bool emptySlotL = false;
     bool emptySlotR = false;
     int emptyLocL = x;
     int emptyLocR = x;
     bool moveL = true;
     bool moveR = true;
-    char leftEnd = ' ';
-    char rightEnd = ' ';
 
     while(moveL || moveR) {
         if(x-L<0 || L>3)
@@ -235,9 +243,9 @@ bool GameBoard::checkHorz(char player, int x, int y) {
 
         if(moveL) {
             if(mGrid[x-L][y]==player) {
-                countScoreL++;
+                scoreL++;
                 if(!emptySlotL)
-                    leftEnd = player;
+                    inLineL++;
             }
             else if(mGrid[x-L][y]=='.') {
                 if(!emptySlotL) {
@@ -254,9 +262,9 @@ bool GameBoard::checkHorz(char player, int x, int y) {
 
         if(moveR) {
             if(mGrid[x+R][y]==player) {
-                countScoreR++;
+                scoreR++;
                 if(!emptySlotR)
-                    rightEnd = player;
+                    inLineR++;
             }
             else if(mGrid[x+R][y]=='.') {
                 if(!emptySlotR) {
@@ -271,41 +279,32 @@ bool GameBoard::checkHorz(char player, int x, int y) {
             R++;
         }
     }
+
+    int score = inLineL + inLineR;
+
     //if there's a win
-    if(countScoreL + countScoreR + 1 >= mN && leftEnd!=' ' && rightEnd!=' ') {
-        setScore(player, false, x, y);
+    if(inLineL + inLineR + 1 >= mN) {
+        setScore(1000, player, isAI, x, y);
         return true;
+    }//if there's two win setups (score)
+    else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
+        setScore(100, player, isAI, emptyLocL, y);
+        setScore(100, player, isAI, emptyLocR, y);
+    }//if there's just one win setup
+    else if(scoreL + scoreR + 1 >= mN-1) {
+        if(emptySlotL)
+            setScore(100, player, isAI, emptyLocL, y);
+        if(emptySlotR)
+            setScore(100, player, isAI, emptyLocR, y);
     }
-    //if there's a potential win setup (score)
-    if(emptySlotL || emptySlotR) {
-        if(emptySlotL) {
-            if(countScoreL + 1 == mN || countScoreL + countScoreR + 1 == mN-1)
-                if(leftEnd==' ') {
-                    if (rightEnd != ' ' && countScoreR+1 == mN-1)
-                        setScore(player, true, emptyLocL, y);
-                }
-                else
-                    setScore(player, true, emptyLocL, y);
-        }
-
-        if(emptySlotR) {
-            if(countScoreR + 1 == mN - 1 || countScoreL + countScoreR + 1 == mN-1)
-                if(rightEnd==' ') {
-                    if(leftEnd!=' ' && countScoreL+1 == mN-1)
-                        setScore(player, true, emptyLocR, y);
-                }
-                else
-                    setScore(player, true, emptyLocR, y);
-        }
-    }
-
-    setScore(player, false, x, y);
+    //if there's a block or just a piece with nothing around it
+    setScore(score, player, isAI, x, y);
 
     return false;
 }
 
 
-bool GameBoard::checkDiag1(char player, int x, int y) {
+bool GameBoard::checkDiag1(char player, bool isAI, int x, int y) {
     //------------Note--------------
     //  MoveL(-, -) : Left, Down
     //  MoveR(+, +) : Right, Up
@@ -313,8 +312,10 @@ bool GameBoard::checkDiag1(char player, int x, int y) {
 
     int L = 1;
     int R = 1;
-    int countScoreL = 0;
-    int countScoreR = 0;
+    int inLineL = 0;
+    int inLineR = 0;
+    int scoreL = 0;
+    int scoreR = 0;
     bool emptySlotL = false;
     bool emptySlotR = false;
     int emptyLocL_x = x;
@@ -323,90 +324,73 @@ bool GameBoard::checkDiag1(char player, int x, int y) {
     int emptyLocR_y = y;
     bool moveL = true;
     bool moveR = true;
-    char leftEnd = ' ';
-    char rightEnd = ' ';
 
     while(moveL || moveR) {
-        if(x-L<0 || y-L<0 || L>3)
+        if (x - L < 0 || y - L < 0 || L > 3)
             moveL = false;
-        if(x+R>mWidth-1 || y+R>mHeight-1 || R>3)
+        if (x + R > mWidth - 1 || y + R > mHeight - 1 || R > 3)
             moveR = false;
 
-        if(moveL) {
-            if(mGrid[x-L][y-L]==player) {
-                countScoreL++;
-                if(!emptySlotL)
-                    leftEnd = player;
-            }
-            else if(mGrid[x-L][y-L]=='.') {
-                if(!emptySlotL) {
-                    emptyLocL_x = x-L;
-                    emptyLocL_y = y-L;
+        if (moveL) {
+            if (mGrid[x - L][y - L] == player) {
+                scoreL++;
+                if (!emptySlotL)
+                    inLineL++;
+            } else if (mGrid[x - L][y - L] == '.') {
+                if (!emptySlotL) {
+                    emptyLocL_x = x - L;
+                    emptyLocL_y = y - L;
                     emptySlotL = true;
-                }
-                else
+                } else
                     moveL = false;
-            }
-            else
+            } else
                 moveL = false;
             L++;
         }
 
-        if(moveR) {
-            if(mGrid[x+R][y+R]==player) {
-                countScoreR++;
-                if(!emptySlotR)
-                    rightEnd = player;
-            }
-            else if(mGrid[x+R][y+R]=='.') {
-                if(!emptySlotR) {
-                    emptyLocR_x = x+R;
-                    emptyLocR_y = y+R;
+        if (moveR) {
+            if (mGrid[x + R][y + R] == player) {
+                scoreR++;
+                if (!emptySlotR)
+                    inLineR++;
+            } else if (mGrid[x + R][y + R] == '.') {
+                if (!emptySlotR) {
+                    emptyLocR_x = x + R;
+                    emptyLocR_y = y + R;
                     emptySlotR = true;
-                }
-                else
+                } else
                     moveR = false;
-            }
-            else
+            } else
                 moveR = false;
             R++;
         }
     }
+
+    int score = inLineL + inLineR;
+
     //if there's a win
-    if(countScoreL + countScoreR + 1 >= mN && leftEnd!=' ' && rightEnd!=' ') {
-        setScore(player, false, x, y);
+    if(score + 1 >= mN) {
+        setScore(1000, player, isAI, x, y);
         return true;
+    }//if there's two win setups (score)
+    else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
+        setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+        setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+    }//if there's just one win setup
+    else if(scoreL + scoreR + 1 >= mN-1) {
+        if(emptySlotL)
+            setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+        if(emptySlotR)
+            setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
     }
-    //if there's a potential win setup (score)
-    if(emptySlotL || emptySlotR) {
-        if(emptySlotL) {
-            if(countScoreL + 1 == mN || countScoreL + countScoreR + 1 == mN-1)
-                if(leftEnd==' ') {
-                    if (rightEnd != ' ' && countScoreR+1 == mN-1)
-                        setScore(player, true, emptyLocL_x, emptyLocL_y);
-                }
-                else
-                    setScore(player, true, emptyLocL_x, emptyLocL_y);
-        }
-
-        if(emptySlotR) {
-            if(countScoreR + 1 == mN - 1 || countScoreL + countScoreR + 1 == mN-1)
-                if(rightEnd==' ') {
-                    if(leftEnd!=' ' && countScoreL+1 == mN-1)
-                        setScore(player, true, emptyLocR_x, emptyLocR_y);
-                }
-                else
-                    setScore(player, true, emptyLocR_x, emptyLocR_y);
-        }
-    }
-
-    setScore(player, false, x, y);
+    //if there's a block or just a piece with nothing around it
+    setScore(score, player, isAI, x, y);
 
     return false;
 }
 
 
-bool GameBoard::checkDiag2(char player, int x, int y) {
+bool GameBoard::checkDiag2(char player, bool isAI, int x, int y) {
     //------------Note--------------
     //  MoveL(-, +) : Left, Up
     //  MoveR(+, -) : Right, Down
@@ -414,8 +398,10 @@ bool GameBoard::checkDiag2(char player, int x, int y) {
 
     int L = 1;
     int R = 1;
-    int countScoreL = 0;
-    int countScoreR = 0;
+    int inLineL = 0;
+    int inLineR = 0;
+    int scoreL = 0;
+    int scoreR = 0;
     bool emptySlotL = false;
     bool emptySlotR = false;
     int emptyLocL_x = x;
@@ -424,8 +410,6 @@ bool GameBoard::checkDiag2(char player, int x, int y) {
     int emptyLocR_y = y;
     bool moveL = true;
     bool moveR = true;
-    char leftEnd = ' ';
-    char rightEnd = ' ';
 
     while(moveL || moveR) {
         if(x-L<0 || y+L>mHeight-1 || L>3)
@@ -435,9 +419,9 @@ bool GameBoard::checkDiag2(char player, int x, int y) {
 
         if(moveL) {
             if(mGrid[x-L][y+L]==player) {
-                countScoreL++;
+                scoreL++;
                 if(!emptySlotL)
-                    leftEnd = player;
+                    inLineL++;
             }
             else if(mGrid[x-L][y+L]=='.') {
                 if(!emptySlotL) {
@@ -455,9 +439,9 @@ bool GameBoard::checkDiag2(char player, int x, int y) {
 
         if(moveR) {
             if(mGrid[x+R][y-R]==player) {
-                countScoreR++;
+                scoreR++;
                 if(!emptySlotR)
-                    rightEnd = player;
+                    inLineR++;
             }
             else if(mGrid[x+R][y-R]=='.') {
                 if(!emptySlotR) {
@@ -473,35 +457,26 @@ bool GameBoard::checkDiag2(char player, int x, int y) {
             R++;
         }
     }
+
+    int score = inLineL + inLineR;
+
     //if there's a win
-    if(countScoreL + countScoreR + 1 >= mN && leftEnd!=' ' && rightEnd!=' ') {
-        setScore(player, false, x, y);
+    if(score + 1 >= mN) {
+        setScore(1000, player, isAI, x, y);
         return true;
+    }//if there's two win setups (score)
+    else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
+        setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+        setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+    }//if there's just one win setup
+    else if(scoreL + scoreR + 1 >= mN-1) {
+        if(emptySlotL)
+            setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+        if(emptySlotR)
+            setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
     }
-    //if there's a potential win setup (score)
-    if(emptySlotL || emptySlotR) {
-        if(emptySlotL) {
-            if(countScoreL + 1 == mN || countScoreL + countScoreR + 1 == mN-1)
-                if(leftEnd==' ') {
-                    if (rightEnd != ' ' && countScoreR+1 == mN-1)
-                        setScore(player, true, emptyLocL_x, emptyLocL_y);
-                }
-                else
-                    setScore(player, true, emptyLocL_x, emptyLocL_y);
-        }
-
-        if(emptySlotR) {
-            if(countScoreR + 1 == mN - 1 || countScoreL + countScoreR + 1 == mN-1)
-                if(rightEnd==' ') {
-                    if(leftEnd!=' ' && countScoreL+1 == mN-1)
-                        setScore(player, true, emptyLocR_x, emptyLocR_y);
-                }
-                else
-                    setScore(player, true, emptyLocR_x, emptyLocR_y);
-        }
-    }
-
-    setScore(player, false, x, y);
+    //if there's a block or just a piece with nothing around it
+    setScore(score, player, isAI, x, y);
 
     return false;
 }
@@ -518,44 +493,38 @@ bool GameBoard::checkDiag2(char player, int x, int y) {
 //
 //  Returns: void
 //---------------------------------------------------
-void GameBoard::setScore(char color, bool isScore, int x, int y) {
-    char temp = wins[x][y];
-    if(temp == '.') {
-        if(isScore) {
-            if (color == 'B')
-                bScore += 1;
+void GameBoard::setScore(int score, char color, bool isAI, int x, int y) {
+    char temp = scores[x][y];
+    int val = score;
+    if(!isAI)
+        val = -score;
+
+    if(score == 1000 || score < 100) {
+        if(temp == '.' || temp == color || temp == '#' || temp == 'X') {
+            totalScore += val;
+        }
+        else {
+            if (isAI)
+                totalScore += 100;
             else
-                rScore += 1;
-            wins[x][y] = color;
-            printWins();    ///TESTING
+                totalScore -= 100;
         }
 
-        return;
-    }
-    else if(temp == color && !isScore) {
-        if(color == 'B')
-            bScore += 1000;
-        else
-            rScore += 1000;
-
-        wins[x][y] = 'X';
-        printWins();    ///TESTING
-
-        return;
-    }
-    else if(temp!= color && temp != 'X') {
-        if(color == 'B')
-            rScore -= 1;
-        else
-            bScore -= 1;
-        wins[x][y] = 'X';
-        printWins();    ///TESTING
-
+        scores[x][y] = 'X';
         return;
     }
     else {
-        printWins();    ///TESTING
-        return;
+        if(temp == color || temp == 'X')
+            return;
+        else {
+            totalScore += val;
+            if(temp == '.')
+                scores[x][y] = color;
+            else
+                scores[x][y] = '#';
+
+            return;
+        }
     }
 }
 
@@ -741,11 +710,6 @@ bool GameBoard::isFull() {
 //
 //  Returns: int
 //---------------------------------------------------
-int GameBoard::getScore(char color) {
-    if(color=='B')
-        return bScore;
-    else if(color == 'R')
-        return rScore;
-
-    return 0;
+int GameBoard::getScore() {
+    return totalScore;
 }

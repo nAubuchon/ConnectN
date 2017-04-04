@@ -4,13 +4,12 @@
 using namespace std;
 
 int main() {
+
     //instantiating game
-    Game myGame(4, true);
+    Game myGame(4, false);
     string garbage;
 
     myGame.displayBoard();
-
-//    int c = 1000000;
 
     //game loop
     while(true) {
@@ -26,8 +25,6 @@ int main() {
                 break;
             else
                 myGame.clearBoard();
-//            myGame.clearBoard();
-//            c--;
         }
 
     }
