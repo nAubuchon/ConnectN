@@ -543,7 +543,7 @@ void GameBoard::setScore(char color, bool isScore, int x, int y) {
             else
                 rScore += 1;
             wins[x][y] = color;
-            printWins();    ///TESTING
+            //printWins();    ///TESTING
         }
 
         return;
@@ -555,7 +555,7 @@ void GameBoard::setScore(char color, bool isScore, int x, int y) {
             rScore += 1000;
 
         wins[x][y] = 'X';
-        printWins();    ///TESTING
+        //printWins();    ///TESTING
 
         return;
     }
@@ -565,12 +565,12 @@ void GameBoard::setScore(char color, bool isScore, int x, int y) {
         else
             bScore -= 1;
         wins[x][y] = 'X';
-        printWins();    ///TESTING
+        //printWins();    ///TESTING
 
         return;
     }
     else {
-        printWins();    ///TESTING
+        //printWins();    ///TESTING
         return;
     }
 }
