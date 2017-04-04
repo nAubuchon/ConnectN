@@ -1,0 +1,3 @@
+C:/Users/mendo/Git/ConnectN/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/mendo/Git/ConnectN/cmake-build-debug/CMakeFiles/connectN.dir
+C:/Users/mendo/Git/ConnectN/cmake-build-debug/CMakeFiles/edit_cache.dir
