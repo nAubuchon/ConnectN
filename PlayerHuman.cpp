@@ -80,13 +80,13 @@ int PlayerHuman::takeTurn(GameBoard* board) {
             cin.clear();
             cin.ignore(100, '\n'); //skip bad input
         }
-        else if( board->placePiece(mColor, choice) )
+        else if( board->placePiece(mColor, choice-1) )
             break;
         else    //user selected a full or non-existent column
             cout << "Invalid Selection..." << endl << endl;
     }
 
-    return choice;
+    return choice-1;
 }
 
 /// For Testing Purposes***

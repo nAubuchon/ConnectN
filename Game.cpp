@@ -37,11 +37,11 @@ Game::Game() {
 //
 //  Returns: Game object
 //---------------------------------------------------
-Game::Game(int N, bool playerFirst) {
+Game::Game(int N, bool playerFirst, int depth) {
     int width = (2*N) - 1;
     int height = (2*N) - 2;
     mGameBoard = new GameBoard(N, width, height);
-    mAI = new PlayerAI(!playerFirst, mGameBoard);
+    mAI = new PlayerAI(!playerFirst, mGameBoard, depth);
     mHuman = new PlayerHuman(playerFirst, "Nick");
     mGameOver = false;
     lastPlayerMove = -1;
@@ -112,6 +112,7 @@ void Game::playGame() {
 
         //displayColumn
         displayBoard();
+        cout << "AI Chose Col " << col+1 << endl;
 
         //get the row where the piece "fell"
         row = mGameBoard->getRow(col) - 1;
@@ -123,12 +124,13 @@ void Game::playGame() {
             return;
         }
 
-//        mGameBoard->printScores();
+        mGameBoard->printScores();      ///FOR TESTING
     }
     // Same process, but with AI First
     else {
         col = mAI->takeTurn(mGameBoard, lastPlayerMove);
         displayBoard();
+        cout << "AI Chose Col " << col+1 << endl;
         row = mGameBoard->getRow(col) - 1;
 
         if(mGameBoard->checkWin('B', true, col, row)) {
@@ -137,7 +139,7 @@ void Game::playGame() {
             return;
         }
 
-//        mGameBoard->printScores();
+        mGameBoard->printScores();      ///FOR TESTING
 
         col = mHuman->takeTurn(mGameBoard);
         lastPlayerMove = col;

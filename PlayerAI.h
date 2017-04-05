@@ -10,15 +10,13 @@
 #include <time.h>
 #include "GameBoard.h"
 
-#define MAX_DEPTH 6
-
 using namespace std;
 
 class PlayerAI {
 public:
     ///constructors
     PlayerAI();
-    PlayerAI(bool isFirst, GameBoard* board);
+    PlayerAI(bool isFirst, GameBoard* board, int depth);
 
     ///destructor
     ~PlayerAI();
@@ -32,6 +30,7 @@ private:
     char mColor;
 	char mPlayerColor;
     GameBoard* mBoardCopy;
+    int mDepth;
     int branches;
 };
 

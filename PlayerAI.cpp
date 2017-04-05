@@ -19,6 +19,7 @@ PlayerAI::PlayerAI() {
 	mPlayerColor = ' ';
     mBoardCopy = NULL;
 	branches = 0;
+	mDepth = 1;
 }
 
 
@@ -37,7 +38,7 @@ PlayerAI::PlayerAI() {
 //
 //  Returns: PlayerAI object
 //---------------------------------------------------
-PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
+PlayerAI::PlayerAI(bool isFirst, GameBoard* board, int depth) {
 	if (isFirst) {
 		mColor = 'B';
 		mPlayerColor = 'R';
@@ -50,6 +51,7 @@ PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
     //call the copy constructor
     mBoardCopy = new GameBoard(board);
 	branches = 0;
+	mDepth = depth;
 }
 
 
@@ -110,19 +112,19 @@ int PlayerAI::takeTurn(GameBoard* board, int playerChoice) {
 			score = minimax(boardCopy, alpha, beta, 1, false, col);
 
 			delete boardCopy;
-		}
 
-		//bestScore = max(bestScore, score)
-		if(bestScore < score)
-			bestScore = score;
-		//alpha = max(alpha, bestScore)
-		if(alpha < bestScore) {
-			alpha = bestScore;
-			bestMove = col;
-		}
+			//bestScore = max(bestScore, score)
+			if(bestScore < score)
+				bestScore = score;
+			//alpha = max(alpha, bestScore)
+			if(alpha < bestScore) {
+				alpha = bestScore;
+				bestMove = col;
+			}
 
-		if(beta <= alpha)
-			break;
+			if(beta <= alpha)
+				break;
+		}
 
 		columnsVisited++;
 		mod = (playerChoice + (toggle*(columnsVisited/2)) ) + 7;
@@ -200,7 +202,7 @@ int PlayerAI::minimax(GameBoard *board, int alpha, int beta, int currentDepth, b
 		col = board->getWidth() / 2;
 
 	// If at the max branch, Check score
-	if (currentDepth == MAX_DEPTH) {
+	if (currentDepth == mDepth) {
 		branches++;
 		return board->getScore();
 	}
@@ -217,17 +219,17 @@ int PlayerAI::minimax(GameBoard *board, int alpha, int beta, int currentDepth, b
 				score = minimax(boardCopy, alpha, beta, currentDepth+1, false, col);
 
 				delete boardCopy;
+
+				//bestScore = max(bestScore, score)
+				if(bestScore < score)
+					bestScore = score;
+				//alpha = max(alpha, bestScore)
+				if(alpha < bestScore)
+					alpha = bestScore;
+
+				if(beta <= alpha)
+					break;
 			}
-
-			//bestScore = max(bestScore, score)
-			if(bestScore < score)
-				bestScore = score;
-			//alpha = max(alpha, bestScore)
-			if(alpha < bestScore)
-				alpha = bestScore;
-
-			if(beta <= alpha)
-				break;
 
 			columnsVisited++;
 			mod = (lastChoice + (toggle*(columnsVisited/2)) ) + 7;
@@ -247,17 +249,17 @@ int PlayerAI::minimax(GameBoard *board, int alpha, int beta, int currentDepth, b
 				score = minimax(boardCopy, alpha, beta, currentDepth+1, true, col);
 
 				delete boardCopy;
+
+				//bestScore = min(bestScore, score)
+				if(bestScore > score)
+					bestScore = score;
+				//alpha = min(alpha, bestScore)
+				if(alpha > bestScore)
+					alpha = bestScore;
+
+				if(beta <= alpha)
+					break;
 			}
-
-			//bestScore = min(bestScore, score)
-			if(bestScore > score)
-				bestScore = score;
-			//alpha = min(alpha, bestScore)
-			if(alpha > bestScore)
-				alpha = bestScore;
-
-			if(beta <= alpha)
-				break;
 
 			columnsVisited++;
 			mod = (lastChoice + (toggle*(columnsVisited/2)) ) + 7;

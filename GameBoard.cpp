@@ -98,22 +98,25 @@ GameBoard::~GameBoard() { // this may need some work
 //---------------------------------------------------
 void GameBoard::printGrid() {
     cout << "Gameboard:" << endl;
-    for (int j=(mHeight-1); j>=0; --j) {
+    for(int j=(mHeight-1); j>=0; --j) {
         for(int i=0; i<mWidth; ++i)
             cout << mGrid[i][j] << " ";
         cout << endl;
     }
+    for(int i=0; i<mWidth; ++i)
+        cout << i+1 << " ";
+    cout << endl;
 //    cout << "Score: " << totalScore << endl;
 }
 
 
 void GameBoard::printScores() {
-    cout << "Scores:" << endl;
-    for (int j=(mHeight-1); j>=0; --j) {
-        for(int i=0; i<mWidth; ++i)
-            cout << scores[i][j] << " ";
-        cout << endl;
-    }
+//    cout << "Scores:" << endl;
+//    for (int j=(mHeight-1); j>=0; --j) {
+//        for(int i=0; i<mWidth; ++i)
+//            cout << scores[i][j] << " ";
+//        cout << endl;
+//    }
     cout << "Score: " << totalScore << endl;
 }
 
@@ -190,31 +193,28 @@ bool GameBoard::checkVert(char player, bool isAI, int x, int y) {
     int score = 0;
     int i = 1;
 
-    //check vertical down
-    if (y >= mN-2) {
-        //begin moving down (0,-1)
-        while (y-i >= 0 && i < mN) {
-            if(mGrid[x][y-i]!=player)
-                break;
-            else
-                score++;
-            i++;
-        }
-        //if count1 is at least N, it's a win
-        if(score + 1 >= mN) {
-            setScore(1000, player, isAI, x, y);
-            return true;
-        }
-            //if there's now a setup for a win
-        else if(score + 1 == mN-1 && y < mHeight-1)
-            setScore(100, player, isAI, x, y+1);
-
-        if(score > 0)
-            score = 1;
-
-        //if there's a block or just a piece with nothing around it
-        setScore(score, player, isAI, x, y);
+    //begin moving down (0,-1)
+    while (y-i >= 0 && i < mN) {
+        if(mGrid[x][y-i]!=player)
+            break;
+        else
+            score++;
+        i++;
     }
+    //if count1 is at least N, it's a win
+    if(score + 1 >= mN) {
+        setScore(1000, player, isAI, x, y);
+        return true;
+    }
+        //if there's now a setup for a win
+    else if(score + 1 == mN-1 && y < mHeight-1)
+        setScore(100, player, isAI, x, y+1);
+
+    if(score > 0)
+        score = 1;
+
+    //if there's a block or just a piece with nothing around it
+    setScore(score, player, isAI, x, y);
 
     return false;
 }
@@ -534,15 +534,14 @@ void GameBoard::setScore(int score, char color, bool isAI, int x, int y) {
         val = -score;
 
     if(score == 1000 || score < 100) {
-        if(temp == color || temp == '#' || temp == '.') {
-            totalScore += val;
-        }
-        else if (temp != 'X' && temp != '.' && temp != color) {
+        if(temp != 'X' && temp != '.' && temp != color) {
             if (isAI)
                 totalScore += 100;
             else
                 totalScore -= 100;
         }
+        else
+            totalScore += val;
 
         scores[x][y] = 'X';
         return;

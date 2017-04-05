@@ -14,7 +14,7 @@ class Game {
 public:
     ///constructors
     Game();
-    Game(int N, bool playerFirst);
+    Game(int N, bool playerFirst, int depth);
 
     ///destructor
     ~Game();
