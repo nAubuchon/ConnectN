@@ -6,10 +6,10 @@ using namespace std;
 int main() {
     int N;
     while(true) {
-        cout << "Select a number for N: (No More than 4 atm, sorry ¯\\_(ツ)_/¯ ): ";
+        cout << "Select a number for N: (No More than 4 atm, sorry): ";
         cin >> N;
 
-        if(cin.good() && N<11)
+        if(cin.good() && N < 5 && N > 1)
             break;
         else {
             cout << "Invalid Input..." << endl;

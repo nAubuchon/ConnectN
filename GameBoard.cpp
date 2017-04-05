@@ -136,7 +136,7 @@ void GameBoard::printScores() {
 //  Returns: bool
 //---------------------------------------------------
 bool GameBoard::placePiece(char color, int column) {
-    if(!full && (column < mWidth) && (mRows[column] < mHeight) ) {
+    if((column >= 0) && !full && (column < mWidth) && (mRows[column] < mHeight) ) {
         mGrid[column][mRows[column]] = color;
         mRows[column]++;
         slots--;
