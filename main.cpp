@@ -14,7 +14,7 @@ int main() {
         else {
             cout << "Invalid Input..." << endl;
             cin.clear();
-            cin.ignore(INT_MAX, '\n');
+            cin.ignore(100, '\n');
         }
     }
 
@@ -34,7 +34,7 @@ int main() {
         else {
             cout << "Invalid Input..." << endl;
             cin.clear();
-            cin.ignore(INT_MAX, '\n');
+            cin.ignore(100, '\n');
         }
     }
 
@@ -48,7 +48,7 @@ int main() {
         else {
             cout << "Invalid Input..." << endl;
             cin.clear();
-            cin.ignore(INT_MAX, '\n');
+            cin.ignore(100, '\n');
         }
     }
 
