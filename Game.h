@@ -37,6 +37,7 @@ private:
 
     //other
     bool mGameOver;
+    int lastPlayerMove;
 };
 
 #endif //CONNECTN_GAME_H

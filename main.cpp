@@ -6,7 +6,7 @@ using namespace std;
 int main() {
 
     //instantiating game
-    Game myGame(4, false);
+    Game myGame(4, true);
     string garbage;
 
     myGame.displayBoard();
@@ -17,6 +17,7 @@ int main() {
         cout << " " << endl;
 
         if(myGame.isGameOver()) {
+            cin.ignore();
             cout << "Enter \"x\" to exit: ";
             getline(cin, garbage);
             if(garbage.empty())

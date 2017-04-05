@@ -18,6 +18,7 @@ Game::Game() {
     mAI = NULL;
     mHuman = NULL;
     mGameOver = false;
+    lastPlayerMove = -1;
 }
 
 
@@ -43,6 +44,7 @@ Game::Game(int N, bool playerFirst) {
     mAI = new PlayerAI(!playerFirst, mGameBoard);
     mHuman = new PlayerHuman(playerFirst, "Nick");
     mGameOver = false;
+    lastPlayerMove = -1;
 }
 
 
@@ -78,8 +80,8 @@ Game::~Game() {
 //  Returns: void
 //---------------------------------------------------
 void Game::playGame() {
-    int col;
-    int row;
+    int col = 0;
+    int row = 0;
 
     if(mGameBoard->isFull()) {
         mGameOver = true;
@@ -90,6 +92,7 @@ void Game::playGame() {
     if(mHuman->getColor()=='B') {
         //initiate Human's turn
         col = mHuman->takeTurn(mGameBoard);
+        lastPlayerMove = col;
 
         //displayColumn
         displayBoard();
@@ -103,8 +106,9 @@ void Game::playGame() {
             mGameOver = true;
             return;
         }
+
         //initiate AI's turn
-        col = mAI->takeTurn(mGameBoard);
+        col = mAI->takeTurn(mGameBoard, lastPlayerMove);
 
         //displayColumn
         displayBoard();
@@ -118,10 +122,12 @@ void Game::playGame() {
             mGameOver = true;
             return;
         }
+
+//        mGameBoard->printScores();
     }
     // Same process, but with AI First
     else {
-        col = mAI->takeTurn(mGameBoard);
+        col = mAI->takeTurn(mGameBoard, lastPlayerMove);
         displayBoard();
         row = mGameBoard->getRow(col) - 1;
 
@@ -130,7 +136,12 @@ void Game::playGame() {
             mGameOver = true;
             return;
         }
+
+//        mGameBoard->printScores();
+
         col = mHuman->takeTurn(mGameBoard);
+        lastPlayerMove = col;
+
         displayBoard();
         row = mGameBoard->getRow(col) - 1;
 

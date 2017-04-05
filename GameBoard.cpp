@@ -33,7 +33,7 @@ GameBoard::GameBoard(int N, int width, int height) {
     for(int i=0; i<width; ++i)
         mRows.push_back(0);
 
-    pieces = width*height;
+    slots = width*height;
     full = false;
     totalScore = 0;
 }
@@ -60,7 +60,7 @@ GameBoard::GameBoard(GameBoard* board) {
     for(int i=0; i<mWidth; ++i)
         mRows.push_back(board->getRow(i));
 
-    pieces = board->getPieces();
+    slots = board->getSlots();
     full = board->isFull();
     totalScore = board->getScore();
 }
@@ -103,6 +103,7 @@ void GameBoard::printGrid() {
             cout << mGrid[i][j] << " ";
         cout << endl;
     }
+//    cout << "Score: " << totalScore << endl;
 }
 
 
@@ -135,9 +136,9 @@ bool GameBoard::placePiece(char color, int column) {
     if(!full && (column < mWidth) && (mRows[column] < mHeight) ) {
         mGrid[column][mRows[column]] = color;
         mRows[column]++;
-        pieces--;
+        slots--;
 
-        if(pieces<1)
+        if(slots<1)
             full = true;
 
         return true;
@@ -168,15 +169,15 @@ bool GameBoard::placePiece(char color, int column) {
 //---------------------------------------------------
 bool GameBoard::checkWin(char player, bool isAI, int x, int y) {
     ///TESTING***********
-    bool poop = checkVert(player, isAI, x,y) || checkHorz(player, isAI, x, y)
-                || checkDiag1(player, isAI, x, y) || checkDiag2(player, isAI, x, y);
-
-    printScores();
-
-    return poop;
+//    bool poop = checkVert(player, isAI, x,y) || checkHorz(player, isAI, x, y)
+//                || checkDiag1(player, isAI, x, y) || checkDiag2(player, isAI, x, y);
+//
+//    printScores();
+//
+//    return poop;
     ///TESTING***********
-//    return checkVert(player, isAI, x,y) || checkHorz(player, isAI, x, y)
-//           || checkDiag1(player, isAI, x, y) || checkDiag2(player, isAI, x, y);
+    return checkVert(player, isAI, x,y) || checkHorz(player, isAI, x, y)
+           || checkDiag1(player, isAI, x, y) || checkDiag2(player, isAI, x, y);
 }
 
 
@@ -208,7 +209,10 @@ bool GameBoard::checkVert(char player, bool isAI, int x, int y) {
         else if(score + 1 == mN-1 && y < mHeight-1)
             setScore(100, player, isAI, x, y+1);
 
-        //if win blocked
+        if(score > 0)
+            score = 1;
+
+        //if there's a block or just a piece with nothing around it
         setScore(score, player, isAI, x, y);
     }
 
@@ -290,13 +294,23 @@ bool GameBoard::checkHorz(char player, bool isAI, int x, int y) {
     else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
         setScore(100, player, isAI, emptyLocL, y);
         setScore(100, player, isAI, emptyLocR, y);
-    }//if there's just one win setup
-    else if(scoreL + scoreR + 1 >= mN-1) {
-        if(emptySlotL)
-            setScore(100, player, isAI, emptyLocL, y);
-        if(emptySlotR)
-            setScore(100, player, isAI, emptyLocR, y);
+    }//if there's just one score
+    else {
+        //if there's just a score to the left
+        if(scoreL + inLineR + 1 >= mN-1) {
+            if(emptySlotL)
+                setScore(100, player, isAI, emptyLocL, y);
+
+        }//if there's just a score to the right
+        if(scoreR + inLineL + 1 >= mN-1) {
+            if(emptySlotR)
+                setScore(100, player, isAI, emptyLocR, y);
+        }
     }
+
+    if(inLineL + inLineR > 0)
+        score = 1;
+
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
 
@@ -376,13 +390,23 @@ bool GameBoard::checkDiag1(char player, bool isAI, int x, int y) {
     else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
         setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
         setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
-    }//if there's just one win setup
-    else if(scoreL + scoreR + 1 >= mN-1) {
-        if(emptySlotL)
-            setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
-        if(emptySlotR)
-            setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+    }//if there's just one score
+    else {
+        //if there's just a score to the left
+        if(scoreL + inLineR + 1 >= mN-1) {
+            if(emptySlotL)
+                setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+
+        }//if there's just a score to the right
+        if(scoreR + inLineL + 1 >= mN-1) {
+            if(emptySlotR)
+                setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+        }
     }
+
+    if(inLineL + inLineR > 0)
+        score = 1;
+
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
 
@@ -468,13 +492,23 @@ bool GameBoard::checkDiag2(char player, bool isAI, int x, int y) {
     else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
         setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
         setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
-    }//if there's just one win setup
-    else if(scoreL + scoreR + 1 >= mN-1) {
-        if(emptySlotL)
-            setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
-        if(emptySlotR)
-            setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+    }//if there's just one score
+    else {
+        //if there's just a score to the left
+        if(scoreL + inLineR + 1 >= mN-1) {
+            if(emptySlotL)
+                setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+
+        }//if there's just a score to the right
+        if(scoreR + inLineL + 1 >= mN-1) {
+            if(emptySlotR)
+                setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+        }
     }
+
+    if(inLineL + inLineR > 0)
+        score = 1;
+
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
 
@@ -500,10 +534,10 @@ void GameBoard::setScore(int score, char color, bool isAI, int x, int y) {
         val = -score;
 
     if(score == 1000 || score < 100) {
-        if(temp == '.' || temp == color || temp == '#' || temp == 'X') {
+        if(temp == color || temp == '#' || temp == '.') {
             totalScore += val;
         }
-        else {
+        else if (temp != 'X' && temp != '.' && temp != color) {
             if (isAI)
                 totalScore += 100;
             else
@@ -670,17 +704,17 @@ int GameBoard::getRow(int column) {
 
 
 //---------------------------------------------------
-//  getPieces()
+//  getSlots()
 //
-//  Purpose: Accessor, returns the number of pieces
-//  placed onto the board
+//  Purpose: Accessor, returns the number of open
+//  left on the board
 //
 //  Parameters: (none)
 //
 //  Returns: int
 //---------------------------------------------------
-int GameBoard::getPieces() {
-    return pieces;
+int GameBoard::getSlots() {
+    return slots;
 }
 
 

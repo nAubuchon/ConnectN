@@ -42,7 +42,7 @@ public:
     int getWidth();
     char** getGrid();
     int getRow(int column);
-    int getPieces();
+    int getSlots();
     bool isFull();
     int getScore();
 
@@ -54,7 +54,7 @@ private:
     char** mGrid;    //2D array of placed pieces
     char** scores;    //2D array of winning slots
     vector<int> mRows;   //keeping track of highest slot
-    int pieces; //the number of pieces placed onto the board
+    int slots; //the number of pieces placed onto the board
     bool full;  //if the board is full
     int totalScore; //the number of "almost wins" for black
 

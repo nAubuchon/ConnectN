@@ -18,6 +18,7 @@ PlayerAI::PlayerAI() {
     mColor = ' ';
 	mPlayerColor = ' ';
     mBoardCopy = NULL;
+	branches = 0;
 }
 
 
@@ -48,6 +49,7 @@ PlayerAI::PlayerAI(bool isFirst, GameBoard* board) {
 
     //call the copy constructor
     mBoardCopy = new GameBoard(board);
+	branches = 0;
 }
 
 
@@ -66,7 +68,7 @@ PlayerAI::~PlayerAI() {
 
 
 //---------------------------------------------------
-//  takeTurn(GameBoard* board)
+//  takeTurn(GameBoard* board, int playerChoice)
 //
 //  Purpose: Sets up a calls the functions for the
 //  PlayerAI to begin the minimax algorithm.  Returns
@@ -75,11 +77,70 @@ PlayerAI::~PlayerAI() {
 //  Parameters:
 //      GameBoard* board -- the actual board to place
 //      the piece into
+//		int playerChoice -- the most recent column
+//		that the player put a piece into
 //
 //  Returns: int
 //---------------------------------------------------
+int PlayerAI::takeTurn(GameBoard* board, int playerChoice) {
+	// Begin minimax algorithm
+	int score = 0;
+	int alpha = -10000;
+	int beta = 10000;
+	int bestMove = playerChoice;
+	int col = bestMove;
+	int bestScore = -10000;
+	int columnsVisited = 1;
+	int toggle = -1;
+	int mod = 0;
 
-//int PlayerAI::takeTurn(GameBoard* board) {
+	if(playerChoice < 0)
+		col = board->getWidth() / 2;
+
+	branches = 0;
+
+	// searches through each of the possible moves
+	while(columnsVisited < mBoardCopy->getWidth()) {
+		if (board->getRow(col) < board->getHeight()) { // Place piece in board.
+			GameBoard *boardCopy = new GameBoard(board);
+			int row = board->getRow(col);
+
+			boardCopy->placePiece(mColor, col);
+			boardCopy->checkWin(mColor, true, col, row);
+			score = minimax(boardCopy, alpha, beta, 1, false, col);
+
+			delete boardCopy;
+		}
+
+		//bestScore = max(bestScore, score)
+		if(bestScore < score)
+			bestScore = score;
+		//alpha = max(alpha, bestScore)
+		if(alpha < bestScore) {
+			alpha = bestScore;
+			bestMove = col;
+		}
+
+		if(beta <= alpha)
+			break;
+
+		columnsVisited++;
+		mod = (playerChoice + (toggle*(columnsVisited/2)) ) + 7;
+		col = mod % (mBoardCopy->getWidth());
+		toggle = -toggle;
+	}
+
+	board->placePiece(mColor, bestMove);
+	cout << "Number of Branches visited: " << branches << endl;
+	return bestMove;
+}
+
+
+
+/// ************ For Testing Purposes ************
+
+///Choosing For AI
+//int PlayerAI::takeTurn(GameBoard* board, int playerChoice) {
 //    int choice = 0;
 //
 //    ///*****************FOR TESTING******************
@@ -100,47 +161,7 @@ PlayerAI::~PlayerAI() {
 //    return choice;
 //}
 
-int PlayerAI::takeTurn(GameBoard* board) {
-// For Testing Purposes***
-//    int x = 0;
-//    while(true) {
-//        x = (rand()%7);
-//        if (board->placePiece(mColor, x))
-//            break;
-//    }
-//  return x;
-
-	// Begin minimax algorithm
-	int score = -1000;
-	int alpha = -1000;
-	int beta = 1000;
-	int bestMove = board->getWidth() / 2;
-
-	// searches through each of the possible moves
-	for (int col = 0; col < board->getWidth(); col++) {
-		if (board->getRow(col) < board->getHeight()) { // Place piece in board.
-			GameBoard *boardCopy = new GameBoard(board);
-			boardCopy->placePiece(mColor, col);
-			score = minimax(boardCopy, col, alpha, beta, 1, false);
-			if (score > alpha) { // Check for MAX
-				alpha = score;
-				bestMove = col;
-			}
-			if (alpha >= beta) { // Check if branch needs to be PRUNED
-				break;
-			}
-			delete(boardCopy);
-		}
-	}
-
-	// Uncomment for debugging
-	// cout << "---> Best move " << bestMove << endl;
-
-	board->placePiece(mColor, bestMove);
-	return bestMove;
-}
-
-/// For Testing Purposes***
+///Random Moves
 //int PlayerAI::takeTurn(GameBoard* board) {
 //    int x = 0;
 //
@@ -153,53 +174,9 @@ int PlayerAI::takeTurn(GameBoard* board) {
 //
 //    return x;
 //}
-/// ***********************
 
+/// **********************************************
 
-//---------------------------------------------------
-//  getColor()
-//
-//  Purpose: Accessor for the color data member, the
-//  assigned piece color of the AI player
-//
-//  Parameters: (none)
-//
-//  Returns: char
-//---------------------------------------------------
-char PlayerAI::getColor() {
-    return mColor;
-}
-
-//---------------------------------------------------
-//  copyGrid(int width, int height, char** grid)
-//
-//  Purpose: Allocates and returns a pointer to new
-//  memory for a copy of the 2D array of chars for
-//  the game grid
-//
-//  Parameters:
-//      int width -- the width of the grid
-//
-//      int height -- the height of the grid
-//
-//      char** grid -- the 2D array to be copied
-//
-//  Returns: char**
-//---------------------------------------------------
-char** PlayerAI::copyGrid(int width, int height, char** grid) {
-    char** array = 0;
-
-    array = new char*[height];
-
-    for (int i=0; i<height; ++i) {
-        array[i] = new char[width];
-
-        for (int j=0; j<width; ++j)
-            array[i][j] = grid[i][j];
-    }
-
-    return array;
-}
 
 //--------------------------------------------------
 // Purpose: Runs the minimax algorithm with
@@ -210,47 +187,84 @@ char** PlayerAI::copyGrid(int width, int height, char** grid) {
 //
 // Obviously, this doesn't work yet.
 //--------------------------------------------------
-int PlayerAI::minimax(GameBoard *board, 
-	int col, int alpha, int beta, int currentDepth, 
-	bool isMax) {
-
-	//For debugging
-	//cout << "------------------------------------" << endl
-	//	<< "Depth: " << currentDepth << (isMax ? " Max" : " Min") << " --- Column: " << col << endl
-	//	<< "Alpha: " << alpha << endl
-	//	<< "Beta:" << beta << endl;
-
+int PlayerAI::minimax(GameBoard *board, int alpha, int beta, int currentDepth, bool isMax, int lastChoice) {
 	int score = 0;
+	int bestScore = 0;
+	int bestMove = lastChoice;
+	int col = bestMove;
+	int columnsVisited = 1;
+	int toggle = -1;
+	int mod = 0;
+
+	if(lastChoice < 0)
+		col = board->getWidth() / 2;
 
 	// If at the max branch, Check score
 	if (currentDepth == MAX_DEPTH) {
-		score = board->getScore(isMax ? mColor : mPlayerColor);
+		branches++;
+		return board->getScore();
+	}
 
-	} 
-	else { // Go down child nodes
-		for (int col = 0; col < board->getWidth(); col++) {
-			GameBoard *boardCopy = new GameBoard(board);
+	if(isMax) { // Go down child nodes
+		bestScore = -10000;
+		while(columnsVisited < mBoardCopy->getWidth()) {
 			if (board->getRow(col) < board->getHeight()) {
-				board->placePiece(isMax ? mColor : mPlayerColor, col);
-				score = minimax(boardCopy, col, alpha, beta, currentDepth+1, !isMax);
-				// Pruning checks
-				score = !isMax ? -score : score;
+				GameBoard *boardCopy = new GameBoard(board);
+				int row = board->getRow(col);
 
-				if (isMax && (score > alpha)) { // If on MAX NODE
-					alpha = score;              // Set alpha to the current highest
-				}
-				else if (score < beta) { // If on MIN NODE
-					beta = score;        // Set beta to the current lowest
-				}
-				if (alpha >= beta) { // Check if branch needs to be PRUNED
-					break;
-				}
+				boardCopy->placePiece(mColor, col);
+				boardCopy->checkWin(mColor, true, col, row);
+				score = minimax(boardCopy, alpha, beta, currentDepth+1, false, col);
+
+				delete boardCopy;
 			}
-			delete(boardCopy);
+
+			//bestScore = max(bestScore, score)
+			if(bestScore < score)
+				bestScore = score;
+			//alpha = max(alpha, bestScore)
+			if(alpha < bestScore)
+				alpha = bestScore;
+
+			if(beta <= alpha)
+				break;
+
+			columnsVisited++;
+			mod = (lastChoice + (toggle*(columnsVisited/2)) ) + 7;
+			col = mod % (mBoardCopy->getWidth());
+			toggle = -toggle;
 		}
 	}
-	//cout << (isMax ? "Max" : "Min") << " --- Column: " << col << endl
-	//	<< "Score: "  << score << endl;
+	else {
+		bestScore = 10000;
+		while(columnsVisited < mBoardCopy->getWidth()) {
+			if (board->getRow(col) < board->getHeight()) {
+				GameBoard *boardCopy = new GameBoard(board);
+				int row = board->getRow(col);
 
-	return score;
+				boardCopy->placePiece(mPlayerColor, col);
+				boardCopy->checkWin(mPlayerColor, false, col, row);
+				score = minimax(boardCopy, alpha, beta, currentDepth+1, true, col);
+
+				delete boardCopy;
+			}
+
+			//bestScore = min(bestScore, score)
+			if(bestScore > score)
+				bestScore = score;
+			//alpha = min(alpha, bestScore)
+			if(alpha > bestScore)
+				alpha = bestScore;
+
+			if(beta <= alpha)
+				break;
+
+			columnsVisited++;
+			mod = (lastChoice + (toggle*(columnsVisited/2)) ) + 7;
+			col = mod % (mBoardCopy->getWidth());
+			toggle = -toggle;
+		}
+	}
+
+	return bestScore;
 }
