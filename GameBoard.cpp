@@ -203,15 +203,15 @@ bool GameBoard::checkVert(char player, bool isAI, int x, int y) {
     }
     //if count1 is at least N, it's a win
     if(score + 1 >= mN) {
-        setScore(1000, player, isAI, x, y);
+        setScore(WIN, player, isAI, x, y);
         return true;
     }
         //if there's now a setup for a win
     else if(score + 1 == mN-1 && y < mHeight-1)
-        setScore(100, player, isAI, x, y+1);
+        setScore(SCORE3, player, isAI, x, y+1);
 
     if(score > 0)
-        score = 1;
+        score = SCORE;
 
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
@@ -288,28 +288,28 @@ bool GameBoard::checkHorz(char player, bool isAI, int x, int y) {
 
     //if there's a win
     if(inLineL + inLineR + 1 >= mN) {
-        setScore(1000, player, isAI, x, y);
+        setScore(WIN, player, isAI, x, y);
         return true;
     }//if there's two win setups (score)
     else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
-        setScore(100, player, isAI, emptyLocL, y);
-        setScore(100, player, isAI, emptyLocR, y);
+        setScore(SCORE3, player, isAI, emptyLocL, y);
+        setScore(SCORE3, player, isAI, emptyLocR, y);
     }//if there's just one score
     else {
         //if there's just a score to the left
         if(scoreL + inLineR + 1 >= mN-1) {
             if(emptySlotL)
-                setScore(100, player, isAI, emptyLocL, y);
+                setScore(SCORE3, player, isAI, emptyLocL, y);
 
         }//if there's just a score to the right
         if(scoreR + inLineL + 1 >= mN-1) {
             if(emptySlotR)
-                setScore(100, player, isAI, emptyLocR, y);
+                setScore(SCORE3, player, isAI, emptyLocR, y);
         }
     }
 
     if(inLineL + inLineR > 0)
-        score = 1;
+        score = SCORE;
 
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
@@ -384,28 +384,28 @@ bool GameBoard::checkDiag1(char player, bool isAI, int x, int y) {
 
     //if there's a win
     if(score + 1 >= mN) {
-        setScore(1000, player, isAI, x, y);
+        setScore(WIN, player, isAI, x, y);
         return true;
     }//if there's two win setups (score)
     else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
-        setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
-        setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+        setScore(SCORE3, player, isAI, emptyLocL_x, emptyLocL_y);
+        setScore(SCORE3, player, isAI, emptyLocR_x, emptyLocR_y);
     }//if there's just one score
     else {
         //if there's just a score to the left
         if(scoreL + inLineR + 1 >= mN-1) {
             if(emptySlotL)
-                setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+                setScore(SCORE3, player, isAI, emptyLocL_x, emptyLocL_y);
 
         }//if there's just a score to the right
         if(scoreR + inLineL + 1 >= mN-1) {
             if(emptySlotR)
-                setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+                setScore(SCORE3, player, isAI, emptyLocR_x, emptyLocR_y);
         }
     }
 
     if(inLineL + inLineR > 0)
-        score = 1;
+        score = SCORE;
 
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
@@ -486,28 +486,28 @@ bool GameBoard::checkDiag2(char player, bool isAI, int x, int y) {
 
     //if there's a win
     if(score + 1 >= mN) {
-        setScore(1000, player, isAI, x, y);
+        setScore(WIN, player, isAI, x, y);
         return true;
     }//if there's two win setups (score)
     else if(emptySlotL && emptySlotR && score + 1 == mN-1) {
-        setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
-        setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+        setScore(SCORE3, player, isAI, emptyLocL_x, emptyLocL_y);
+        setScore(SCORE3, player, isAI, emptyLocR_x, emptyLocR_y);
     }//if there's just one score
     else {
         //if there's just a score to the left
         if(scoreL + inLineR + 1 >= mN-1) {
             if(emptySlotL)
-                setScore(100, player, isAI, emptyLocL_x, emptyLocL_y);
+                setScore(SCORE3, player, isAI, emptyLocL_x, emptyLocL_y);
 
         }//if there's just a score to the right
         if(scoreR + inLineL + 1 >= mN-1) {
             if(emptySlotR)
-                setScore(100, player, isAI, emptyLocR_x, emptyLocR_y);
+                setScore(SCORE3, player, isAI, emptyLocR_x, emptyLocR_y);
         }
     }
 
     if(inLineL + inLineR > 0)
-        score = 1;
+        score = SCORE;
 
     //if there's a block or just a piece with nothing around it
     setScore(score, player, isAI, x, y);
@@ -533,12 +533,12 @@ void GameBoard::setScore(int score, char color, bool isAI, int x, int y) {
     if(!isAI)
         val = -score;
 
-    if(score == 1000 || score < 100) {
+    if(score == SCORE || score < SCORE3) {
         if(temp != 'X' && temp != '.' && temp != color) {
             if (isAI)
-                totalScore += 100;
+                totalScore += SCORE3;
             else
-                totalScore -= 100;
+                totalScore -= SCORE3;
         }
         else
             totalScore += val;

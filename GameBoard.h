@@ -10,6 +10,10 @@
 #include <vector>
 #include <cstdlib>
 
+#define WIN 1000
+#define SCORE3 100
+#define SCORE 1
+
 using namespace std;
 
 class GameBoard {
